@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ZoneBaseMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.ZoneBase" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="zone_name" property="zoneName" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="machine_type_id" property="machineTypeId" jdbcType="BIGINT" />
+    <result column="machine_num" property="machineNum" jdbcType="INTEGER" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="box_group_id" property="boxGroupId" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="ZoneMap" type="com.hema.newretail.backstage.model.zonebase.ZoneMapGridBo" >
+    <id column="zoneId" property="zoneId" jdbcType="BIGINT" />
+    <result column="zoneName" property="zoneName" jdbcType="VARCHAR" />
+    <result column="machineNum" property="machineNum" jdbcType="INTEGER" />
+
+    <collection property="hashcodes" select="selectZoneGeohash" column="zoneId" javaType="java.util.ArrayList"
+                ofType="com.hema.newretail.backstage.model.zonebase.ZoneHashcodesBo"></collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, zone_name, province, city, area, machine_type_id, machine_num, gmt_create, gmt_modified, 
+    box_group_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_zone
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_zone
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.ZoneBase" >
+    insert into base_zone (id, zone_name, province, 
+      city, area, machine_type_id, 
+      machine_num, gmt_create, gmt_modified, 
+      box_group_id)
+    values (#{id,jdbcType=BIGINT}, #{zoneName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{machineTypeId,jdbcType=BIGINT}, 
+      #{machineNum,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{boxGroupId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.ZoneBase" useGeneratedKeys="true" keyProperty="id">
+    insert into base_zone
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="zoneName != null" >
+        zone_name,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="machineTypeId != null" >
+        machine_type_id,
+      </if>
+      <if test="machineNum != null" >
+        machine_num,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="boxGroupId != null" >
+        box_group_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="zoneName != null" >
+        #{zoneName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="machineTypeId != null" >
+        #{machineTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="machineNum != null" >
+        #{machineNum,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boxGroupId != null" >
+        #{boxGroupId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.ZoneBase" >
+    update base_zone
+    <set >
+      <if test="zoneName != null" >
+        zone_name = #{zoneName,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="machineTypeId != null" >
+        machine_type_id = #{machineTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="machineNum != null" >
+        machine_num = #{machineNum,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boxGroupId != null" >
+        box_group_id = #{boxGroupId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.ZoneBase" >
+    update base_zone
+    set zone_name = #{zoneName,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      machine_type_id = #{machineTypeId,jdbcType=BIGINT},
+      machine_num = #{machineNum,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      box_group_id = #{boxGroupId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectZoneListByCondition" resultType="com.hema.newretail.backstage.model.zonebase.ZoneBo">
+    select z.id as zoneId, z.zone_name as zoneName, z.province as province, z.city as city, z.area as area,
+    z.machine_type_id as machineTypeId, z.machine_num as machineNum, z.box_group_id as boxGroupId,
+    mt.machine_type_name as machineTypeName, z.gmt_modified as gmtModified, g.`name` as boxGroupName
+    from base_zone as z
+      inner join base_machine_type as mt on z.machine_type_id=mt.id
+      left join base_box_group as g on z.box_group_id=g.id
+    <where>
+      1=1
+      <if test="null != paramsMap.machineTypeId">
+        and z.machine_type_id=#{paramsMap.machineTypeId}
+      </if>
+      <if test="null != paramsMap.province and paramsMap.province != ''">
+        and z.province=#{paramsMap.province}
+      </if>
+      <if test="null != paramsMap.city and paramsMap.city != ''">
+        and z.city=#{paramsMap.city}
+      </if>
+      <if test="null != paramsMap.area and paramsMap.area != ''">
+        and z.area=#{paramsMap.area}
+      </if>
+    </where>
+    order by z.gmt_create
+  </select>
+  <select id="selectMachineNumByHashcode" resultType="java.lang.Integer">
+    select count(DISTINCT m.id) as num from base_machine_info as m where m.hashcode in
+    <foreach collection="hashcodes" item="item" index="no" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+    <select id="getHashCode" parameterType="java.util.List" resultType="java.lang.String">
+        select t.geo_hash from ref_zone_machine t where t.zone_id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by t.geo_hash having count(t.id) >1;
+
+    </select>
+	<!-- group by t.geo_hash having count(t.id) >1; -->
+    <select id="getHashCodeCross" resultType="java.lang.String">
+      select t.geo_hash from ref_zone_machine t
+      <where>
+          t.geo_hash in
+          <foreach item="item" collection="hashcodes" open="(" separator="," close=")">
+              #{item}
+          </foreach>
+          <if test="null != zoneId ">
+              and t.zone_id != #{zoneId}
+          </if>
+      </where>
+    </select>
+
+    <select id="getMachHashCode" resultType="java.lang.String" parameterType="java.util.Map">
+        select distinct info.hashcode
+        from base_machine_info info where not EXISTS(select 1 from ref_zone_machine ref,base_zone z
+        where ref.geo_hash = info.hashcode and ref.zone_id = z.id
+        <if test="null != province and province != ''">
+            and z.province=#{province}
+        </if>
+        <if test="null != city and city != ''">
+            and z.city=#{city}
+        </if>
+        <if test="null != area and area != ''">
+            and z.area=#{area}
+        </if>) and info.is_deleted = '0'
+        and info.machine_code in
+        <foreach item="item" collection="hashcodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+  <select id="selectZoneForMap" resultMap="ZoneMap">
+    select z.id as zoneId, z.zone_name as zoneName, z.machine_num as machineNum
+    from base_zone as z
+    <where>
+      1=1
+      <if test="null != paramsMap.province and paramsMap.province != ''">
+        and z.province=#{paramsMap.province}
+      </if>
+      <if test="null != paramsMap.city and paramsMap.city != ''">
+        and z.city=#{paramsMap.city}
+      </if>
+      <if test="null != paramsMap.area and paramsMap.area != ''">
+        and z.area=#{paramsMap.area}
+      </if>
+    </where>
+    order by z.gmt_create
+  </select>
+  <select id="selectZoneGeohash" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.zonebase.ZoneHashcodesBo">
+    select geo_hash as geoHash from ref_zone_machine where zone_id=#{zoneId}
+  </select>
+</mapper>

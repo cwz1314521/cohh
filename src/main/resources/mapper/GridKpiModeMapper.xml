@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridKpiModeMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridKpiModeEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="density_range_min" property="densityRangeMin" jdbcType="INTEGER" />
+    <result column="density_range_max" property="densityRangeMax" jdbcType="INTEGER" />
+    <result column="task_good_reward" property="taskGoodReward" jdbcType="INTEGER" />
+    <result column="replenishment_reward" property="replenishmentReward" jdbcType="INTEGER" />
+    <result column="cleanup_reward" property="cleanupReward" jdbcType="INTEGER" />
+    <result column="replace_reward" property="replaceReward" jdbcType="INTEGER" />
+    <result column="maintenance_reward" property="maintenanceReward" jdbcType="INTEGER" />
+    <result column="inspection_reward" property="inspectionReward" jdbcType="INTEGER" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, density_range_min, density_range_max, task_good_reward, replenishment_reward, 
+    cleanup_reward, replace_reward, maintenance_reward, inspection_reward, reward_amount, 
+    gmt_modified, gmt_create
+  </sql>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from grid_kpi_mode
+        order by density_range_max desc
+    </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_kpi_mode
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_kpi_mode
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridKpiModeEntry" >
+    insert into grid_kpi_mode (id, density_range_min, density_range_max, 
+      task_good_reward, replenishment_reward, cleanup_reward, 
+      replace_reward, maintenance_reward, inspection_reward, 
+      reward_amount, gmt_modified, gmt_create
+      )
+    values (#{id,jdbcType=BIGINT}, #{densityRangeMin,jdbcType=INTEGER}, #{densityRangeMax,jdbcType=INTEGER}, 
+      #{taskGoodReward,jdbcType=INTEGER}, #{replenishmentReward,jdbcType=INTEGER}, #{cleanupReward,jdbcType=INTEGER}, 
+      #{replaceReward,jdbcType=INTEGER}, #{maintenanceReward,jdbcType=INTEGER}, #{inspectionReward,jdbcType=INTEGER}, 
+      #{rewardAmount,jdbcType=DECIMAL}, #{gmtModified,jdbcType=TIMESTAMP}, #{gmtCreate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridKpiModeEntry" >
+    insert into grid_kpi_mode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="densityRangeMin != null" >
+        density_range_min,
+      </if>
+      <if test="densityRangeMax != null" >
+        density_range_max,
+      </if>
+      <if test="taskGoodReward != null" >
+        task_good_reward,
+      </if>
+      <if test="replenishmentReward != null" >
+        replenishment_reward,
+      </if>
+      <if test="cleanupReward != null" >
+        cleanup_reward,
+      </if>
+      <if test="replaceReward != null" >
+        replace_reward,
+      </if>
+      <if test="maintenanceReward != null" >
+        maintenance_reward,
+      </if>
+      <if test="inspectionReward != null" >
+        inspection_reward,
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="densityRangeMin != null" >
+        #{densityRangeMin,jdbcType=INTEGER},
+      </if>
+      <if test="densityRangeMax != null" >
+        #{densityRangeMax,jdbcType=INTEGER},
+      </if>
+      <if test="taskGoodReward != null" >
+        #{taskGoodReward,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentReward != null" >
+        #{replenishmentReward,jdbcType=INTEGER},
+      </if>
+      <if test="cleanupReward != null" >
+        #{cleanupReward,jdbcType=INTEGER},
+      </if>
+      <if test="replaceReward != null" >
+        #{replaceReward,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceReward != null" >
+        #{maintenanceReward,jdbcType=INTEGER},
+      </if>
+      <if test="inspectionReward != null" >
+        #{inspectionReward,jdbcType=INTEGER},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridKpiModeEntry" >
+    update grid_kpi_mode
+    <set >
+      <if test="densityRangeMin != null" >
+        density_range_min = #{densityRangeMin,jdbcType=INTEGER},
+      </if>
+      <if test="densityRangeMax != null" >
+        density_range_max = #{densityRangeMax,jdbcType=INTEGER},
+      </if>
+      <if test="taskGoodReward != null" >
+        task_good_reward = #{taskGoodReward,jdbcType=INTEGER},
+      </if>
+      <if test="replenishmentReward != null" >
+        replenishment_reward = #{replenishmentReward,jdbcType=INTEGER},
+      </if>
+      <if test="cleanupReward != null" >
+        cleanup_reward = #{cleanupReward,jdbcType=INTEGER},
+      </if>
+      <if test="replaceReward != null" >
+        replace_reward = #{replaceReward,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceReward != null" >
+        maintenance_reward = #{maintenanceReward,jdbcType=INTEGER},
+      </if>
+      <if test="inspectionReward != null" >
+        inspection_reward = #{inspectionReward,jdbcType=INTEGER},
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount = #{rewardAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridKpiModeEntry" >
+    update grid_kpi_mode
+    set density_range_min = #{densityRangeMin,jdbcType=INTEGER},
+      density_range_max = #{densityRangeMax,jdbcType=INTEGER},
+      task_good_reward = #{taskGoodReward,jdbcType=INTEGER},
+      replenishment_reward = #{replenishmentReward,jdbcType=INTEGER},
+      cleanup_reward = #{cleanupReward,jdbcType=INTEGER},
+      replace_reward = #{replaceReward,jdbcType=INTEGER},
+      maintenance_reward = #{maintenanceReward,jdbcType=INTEGER},
+      inspection_reward = #{inspectionReward,jdbcType=INTEGER},
+      reward_amount = #{rewardAmount,jdbcType=DECIMAL},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseFunctionMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseFunction" >
+    <id column="func_code" property="funcCode" jdbcType="VARCHAR" />
+    <result column="func_name" property="funcName" jdbcType="VARCHAR" />
+    <result column="func_url" property="funcUrl" jdbcType="VARCHAR" />
+    <result column="is_button" property="isButton" jdbcType="BIT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    func_code, func_name, func_url, is_button, gmt_create, gmt_modified, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_function
+    where func_code = #{funcCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from base_function
+    where func_code = #{funcCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseFunction" >
+    insert into base_function (func_code, func_name, func_url, 
+      is_button, gmt_create, gmt_modified, 
+      is_deleted)
+    values (#{funcCode,jdbcType=VARCHAR}, #{funcName,jdbcType=VARCHAR}, #{funcUrl,jdbcType=VARCHAR}, 
+      #{isButton,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseFunction" >
+    insert into base_function
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="funcCode != null" >
+        func_code,
+      </if>
+      <if test="funcName != null" >
+        func_name,
+      </if>
+      <if test="funcUrl != null" >
+        func_url,
+      </if>
+      <if test="isButton != null" >
+        is_button,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="funcCode != null" >
+        #{funcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="funcName != null" >
+        #{funcName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcUrl != null" >
+        #{funcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isButton != null" >
+        #{isButton,jdbcType=BIT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseFunction" >
+    update base_function
+    <set >
+      <if test="funcName != null" >
+        func_name = #{funcName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcUrl != null" >
+        func_url = #{funcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isButton != null" >
+        is_button = #{isButton,jdbcType=BIT},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    where func_code = #{funcCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseFunction" >
+    update base_function
+    set func_name = #{funcName,jdbcType=VARCHAR},
+      func_url = #{funcUrl,jdbcType=VARCHAR},
+      is_button = #{isButton,jdbcType=BIT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where func_code = #{funcCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

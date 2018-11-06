@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.IndexpageCssEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.IndexpageCssEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="css_content" property="cssContent" jdbcType="VARCHAR" />
+    <result column="css_type" property="cssType" jdbcType="SMALLINT" />
+    <result column="css_abstract" property="cssAbstract" jdbcType="VARCHAR" />
+    <result column="gruid_num" property="gruidNum" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, css_content, css_type, css_abstract, gruid_num
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_indexpage_css
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_indexpage_css
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.IndexpageCssEntry" >
+    insert into base_indexpage_css (id, css_content, css_type, 
+      css_abstract, gruid_num)
+    values (#{id,jdbcType=BIGINT}, #{cssContent,jdbcType=VARCHAR}, #{cssType,jdbcType=SMALLINT}, 
+      #{cssAbstract,jdbcType=VARCHAR}, #{gruidNum,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.IndexpageCssEntry" >
+    insert into base_indexpage_css
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cssContent != null" >
+        css_content,
+      </if>
+      <if test="cssType != null" >
+        css_type,
+      </if>
+      <if test="cssAbstract != null" >
+        css_abstract,
+      </if>
+      <if test="gruidNum != null" >
+        gruid_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="cssContent != null" >
+        #{cssContent,jdbcType=VARCHAR},
+      </if>
+      <if test="cssType != null" >
+        #{cssType,jdbcType=SMALLINT},
+      </if>
+      <if test="cssAbstract != null" >
+        #{cssAbstract,jdbcType=VARCHAR},
+      </if>
+      <if test="gruidNum != null" >
+        #{gruidNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.IndexpageCssEntry" >
+    update base_indexpage_css
+    <set >
+      <if test="cssContent != null" >
+        css_content = #{cssContent,jdbcType=VARCHAR},
+      </if>
+      <if test="cssType != null" >
+        css_type = #{cssType,jdbcType=SMALLINT},
+      </if>
+      <if test="cssAbstract != null" >
+        css_abstract = #{cssAbstract,jdbcType=VARCHAR},
+      </if>
+      <if test="gruidNum != null" >
+        gruid_num = #{gruidNum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.IndexpageCssEntry" >
+    update base_indexpage_css
+    set css_content = #{cssContent,jdbcType=VARCHAR},
+      css_type = #{cssType,jdbcType=SMALLINT},
+      css_abstract = #{cssAbstract,jdbcType=VARCHAR},
+      gruid_num = #{gruidNum,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAllData" resultMap="BaseResultMap">
+    select css.id, css.css_abstract, css.css_type, css.gruid_num from base_indexpage_css as css
+  </select>
+</mapper>

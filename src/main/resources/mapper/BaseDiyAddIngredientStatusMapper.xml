@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseDiyAddIngredientStatusMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseDiyAddIngredientStatusEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="Ingredients_volume_min" property="ingredientsVolumeMin" jdbcType="INTEGER" />
+    <result column="Ingredients_volume_max" property="ingredientsVolumeMax" jdbcType="INTEGER" />
+    <result column="state_description" property="stateDescription" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, Ingredients_volume_min, Ingredients_volume_max, state_description, gmt_create, 
+    gmt_modified
+  </sql>
+
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from base_diy_add_ingredient_status
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_diy_add_ingredient_status
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_diy_add_ingredient_status
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseDiyAddIngredientStatusEntry" >
+    insert into base_diy_add_ingredient_status (id, Ingredients_volume_min, Ingredients_volume_max, 
+      state_description, gmt_create, gmt_modified
+      )
+    values (#{id,jdbcType=BIGINT}, #{ingredientsVolumeMin,jdbcType=INTEGER}, #{ingredientsVolumeMax,jdbcType=INTEGER}, 
+      #{stateDescription,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyAddIngredientStatusEntry" >
+    insert into base_diy_add_ingredient_status
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ingredientsVolumeMin != null" >
+        Ingredients_volume_min,
+      </if>
+      <if test="ingredientsVolumeMax != null" >
+        Ingredients_volume_max,
+      </if>
+      <if test="stateDescription != null" >
+        state_description,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientsVolumeMin != null" >
+        #{ingredientsVolumeMin,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientsVolumeMax != null" >
+        #{ingredientsVolumeMax,jdbcType=INTEGER},
+      </if>
+      <if test="stateDescription != null" >
+        #{stateDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyAddIngredientStatusEntry" >
+    update base_diy_add_ingredient_status
+    <set >
+      <if test="ingredientsVolumeMin != null" >
+        Ingredients_volume_min = #{ingredientsVolumeMin,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientsVolumeMax != null" >
+        Ingredients_volume_max = #{ingredientsVolumeMax,jdbcType=INTEGER},
+      </if>
+      <if test="stateDescription != null" >
+        state_description = #{stateDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseDiyAddIngredientStatusEntry" >
+    update base_diy_add_ingredient_status
+    set Ingredients_volume_min = #{ingredientsVolumeMin,jdbcType=INTEGER},
+      Ingredients_volume_max = #{ingredientsVolumeMax,jdbcType=INTEGER},
+      state_description = #{stateDescription,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

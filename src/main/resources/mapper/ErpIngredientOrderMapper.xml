@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ErpIngredientOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.erp.ErpIngredientOrderEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+    <result column="ingredient_manufacturer_id" property="ingredientManufacturerId" jdbcType="BIGINT" />
+    <result column="contract_price" property="contractPrice" jdbcType="DECIMAL" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="BaseOneMap" type="com.hema.newretail.backstage.model.erp.OrderListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_code" property="orderCode" jdbcType="VARCHAR" />
+    <result column="manufacturerName" property="manufacturerName" jdbcType="VARCHAR" />
+    <result column="contract_price" property="contractPrice" jdbcType="DECIMAL" />
+    <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <collection property="ingredients" select="selectBaseTwoIMap" column="id" javaType="java.util.ArrayList"
+                ofType="BaseTwoIMap"></collection>
+    <collection property="addresses" select="selectBaseTwoAMap" column="id" javaType="java.util.ArrayList"
+                ofType="BaseTwoAMap"></collection>
+  </resultMap>
+  <resultMap id="BaseTwoIMap" type="com.hema.newretail.backstage.model.erp.OrderListIngredientBo" >
+  <id column="ingredientId" property="ingredientId" jdbcType="BIGINT" />
+  <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+  <result column="ingredient_code" property="ingredientCode" jdbcType="VARCHAR" />
+  <result column="num" property="num" jdbcType="INTEGER" />
+</resultMap>
+  <resultMap id="BaseTwoAMap" type="com.hema.newretail.backstage.model.erp.OrderListAddressBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contact_way" jdbcType="VARCHAR" property="tel" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="delivery_time" property="deliveryTime" jdbcType="TIMESTAMP" />
+    <collection property="ingredientNum" select="selectBaseThreeMap" column="id" javaType="java.util.ArrayList"
+                ofType="BaseThreeMap"></collection>
+  </resultMap>
+  <resultMap id="BaseThreeMap" type="com.hema.newretail.backstage.model.erp.AddressIngredientBo" >
+    <id column="id" property="orderIngredientId" jdbcType="BIGINT" />
+    <id column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_code, ingredient_manufacturer_id, contract_price, order_status, remark, 
+    gmt_create, gmt_modified
+  </sql>
+
+  <select id="selectAllCount" resultType="java.lang.Integer">
+   select count(id) from `erp_ingredient_order` where YEAR(gmt_create)=YEAR(NOW())
+  </select>
+  <select id="selectBaseThreeMap" resultMap="BaseThreeMap" parameterType="java.lang.Long" >
+   SELECT DISTINCT
+	a.id,
+	i.ingredient_id,
+	i.num,
+	f.ingredient_name
+FROM
+	erp_ingredient_order_address a,
+	erp_order_ingredient i,
+	base_ingredient_info f
+WHERE
+	a.id = i.ingredient_order_address_id
+AND i.ingredient_id = f.id
+AND a.id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectBaseTwoAMap" resultMap="BaseTwoAMap" parameterType="java.lang.Long" >
+     SELECT DISTINCT
+ b.company_name,
+ a.id,
+ b.contact,
+ b.contact_way,
+ a.delivery_time,
+ CONCAT(
+	b.province,
+	b.city,
+	b.area,
+	b.addr
+) AS addr
+FROM
+	erp_ingredient_order o,
+	erp_ingredient_order_address a,
+	base_company b
+WHERE
+	a.ingredient_order_id = o.id
+AND b.id = a.company_id
+and o.id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectBaseTwoIMap" resultMap="BaseTwoIMap" parameterType="java.lang.Long" >
+    SELECT DISTINCT
+	b.ingredient_name,
+	b.ingredient_code,
+	b.id ingredientId,
+	SUM(i.num) num
+FROM
+	erp_ingredient_order o,
+	erp_ingredient_order_address a,
+	erp_order_ingredient i,
+	base_ingredient_info b
+WHERE
+	a.ingredient_order_id = o.id
+AND i.ingredient_order_address_id = a.id
+AND i.ingredient_id = b.id
+and o.id = #{id,jdbcType=BIGINT}
+GROUP BY i.ingredient_id
+  </select>
+  <select id="selectByCondition" resultMap="BaseOneMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.OrderListDBCondition" >
+    SELECT
+    DISTINCT
+    o.id,
+    o.order_code,
+    m.company_name manufacturerName,
+    o.contract_price,
+    o.order_status,
+    o.remark,
+    o.gmt_create
+    FROM
+    erp_ingredient_order o
+    LEFT JOIN erp_ingredient_order_address a ON a.ingredient_order_id = o.id
+    LEFT JOIN erp_ingredient_manufacturer m ON o.ingredient_manufacturer_id = m.id
+    LEFT JOIN erp_order_ingredient i on i.ingredient_order_address_id = a.id
+    WHERE
+    1 = 1
+    <if test="startPrice != null" >
+      and o.contract_price between #{startPrice,jdbcType=DECIMAL} and #{endPrice,jdbcType=DECIMAL}
+    </if>
+    <if test="startDate != null" >
+      and o.gmt_create between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="manufacturerId != null" >
+      and o.ingredient_manufacturer_id = #{manufacturerId,jdbcType=BIGINT}
+    </if>
+    <if test="orderCode != null" >
+      and o.order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+      and a.company_id = #{companyId,jdbcType=BIGINT}
+    </if>
+    <if test="ingredientId != null" >
+      and i.ingredient_id = #{ingredientId,jdbcType=BIGINT}
+    </if>
+    <if test="status != null" >
+      and o.status = #{status,jdbcType=BIGINT}
+    </if>
+    order by o.gmt_create DESC
+
+
+  </select>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from erp_ingredient_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from erp_ingredient_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientOrderEntry" >
+    insert into erp_ingredient_order (id, order_code, ingredient_manufacturer_id, 
+      contract_price, order_status, remark, 
+      gmt_create, gmt_modified)
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{ingredientManufacturerId,jdbcType=BIGINT}, 
+      #{contractPrice,jdbcType=DECIMAL}, #{orderStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientOrderEntry" >
+    insert into erp_ingredient_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderCode != null" >
+        order_code,
+      </if>
+      <if test="ingredientManufacturerId != null" >
+        ingredient_manufacturer_id,
+      </if>
+      <if test="contractPrice != null" >
+        contract_price,
+      </if>
+      <if test="orderStatus != null" >
+        order_status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderCode != null" >
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientManufacturerId != null" >
+        #{ingredientManufacturerId,jdbcType=BIGINT},
+      </if>
+      <if test="contractPrice != null" >
+        #{contractPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientOrderEntry" >
+    update erp_ingredient_order
+    <set >
+      <if test="orderCode != null" >
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientManufacturerId != null" >
+        ingredient_manufacturer_id = #{ingredientManufacturerId,jdbcType=BIGINT},
+      </if>
+      <if test="contractPrice != null" >
+        contract_price = #{contractPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="orderStatus != null" >
+        order_status = #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientOrderEntry" >
+    update erp_ingredient_order
+    set order_code = #{orderCode,jdbcType=VARCHAR},
+      ingredient_manufacturer_id = #{ingredientManufacturerId,jdbcType=BIGINT},
+      contract_price = #{contractPrice,jdbcType=DECIMAL},
+      order_status = #{orderStatus,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

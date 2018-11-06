@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridIntegralRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridIntegralRuleEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="grid_company_id" property="gridCompanyId" jdbcType="BIGINT" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL" />
+    <result column="replenishment_time" property="replenishmentTime" jdbcType="INTEGER" />
+    <result column="cleanup_reward" property="cleanupReward" jdbcType="INTEGER" />
+    <result column="replace_reward" property="replaceReward" jdbcType="INTEGER" />
+    <result column="maintenance_reward" property="maintenanceReward" jdbcType="INTEGER" />
+    <result column="inspection_reward" property="inspectionReward" jdbcType="INTEGER" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, grid_company_id, reward_amount, replenishment_time, cleanup_reward, replace_reward, 
+    maintenance_reward, inspection_reward, gmt_create, effective_time
+  </sql>
+  <select id="selectByCompany" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    *
+    from grid_integral_rule
+    where grid_company_id = #{gridCompanyId,jdbcType=BIGINT}
+    order  by effective_time desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_integral_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_integral_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridIntegralRuleEntry" >
+    insert into grid_integral_rule (id, grid_company_id, reward_amount, 
+      replenishment_time, cleanup_reward, replace_reward, 
+      maintenance_reward, inspection_reward, gmt_create, 
+      effective_time)
+    values (#{id,jdbcType=BIGINT}, #{gridCompanyId,jdbcType=BIGINT}, #{rewardAmount,jdbcType=DECIMAL}, 
+      #{replenishmentTime,jdbcType=INTEGER}, #{cleanupReward,jdbcType=INTEGER}, #{replaceReward,jdbcType=INTEGER}, 
+      #{maintenanceReward,jdbcType=INTEGER}, #{inspectionReward,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{effectiveTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridIntegralRuleEntry" >
+    insert into grid_integral_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id,
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount,
+      </if>
+      <if test="replenishmentTime != null" >
+        replenishment_time,
+      </if>
+      <if test="cleanupReward != null" >
+        cleanup_reward,
+      </if>
+      <if test="replaceReward != null" >
+        replace_reward,
+      </if>
+      <if test="maintenanceReward != null" >
+        maintenance_reward,
+      </if>
+      <if test="inspectionReward != null" >
+        inspection_reward,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyId != null" >
+        #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="rewardAmount != null" >
+        #{rewardAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="replenishmentTime != null" >
+        #{replenishmentTime,jdbcType=INTEGER},
+      </if>
+      <if test="cleanupReward != null" >
+        #{cleanupReward,jdbcType=INTEGER},
+      </if>
+      <if test="replaceReward != null" >
+        #{replaceReward,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceReward != null" >
+        #{maintenanceReward,jdbcType=INTEGER},
+      </if>
+      <if test="inspectionReward != null" >
+        #{inspectionReward,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveTime != null" >
+        #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridIntegralRuleEntry" >
+    update grid_integral_rule
+    <set >
+      <if test="gridCompanyId != null" >
+        grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="rewardAmount != null" >
+        reward_amount = #{rewardAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="replenishmentTime != null" >
+        replenishment_time = #{replenishmentTime,jdbcType=INTEGER},
+      </if>
+      <if test="cleanupReward != null" >
+        cleanup_reward = #{cleanupReward,jdbcType=INTEGER},
+      </if>
+      <if test="replaceReward != null" >
+        replace_reward = #{replaceReward,jdbcType=INTEGER},
+      </if>
+      <if test="maintenanceReward != null" >
+        maintenance_reward = #{maintenanceReward,jdbcType=INTEGER},
+      </if>
+      <if test="inspectionReward != null" >
+        inspection_reward = #{inspectionReward,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridIntegralRuleEntry" >
+    update grid_integral_rule
+    set grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      reward_amount = #{rewardAmount,jdbcType=DECIMAL},
+      replenishment_time = #{replenishmentTime,jdbcType=INTEGER},
+      cleanup_reward = #{cleanupReward,jdbcType=INTEGER},
+      replace_reward = #{replaceReward,jdbcType=INTEGER},
+      maintenance_reward = #{maintenanceReward,jdbcType=INTEGER},
+      inspection_reward = #{inspectionReward,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      effective_time = #{effectiveTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

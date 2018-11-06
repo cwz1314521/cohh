@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseFuncGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseFuncGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="func_group_code" property="funcGroupCode" jdbcType="VARCHAR" />
+    <result column="func_group_name" property="funcGroupName" jdbcType="VARCHAR" />
+    <result column="moudle_code" property="moudleCode" jdbcType="VARCHAR" />
+    <result column="moudle_name" property="moudleName" jdbcType="VARCHAR" />
+    <result column="func_code" property="funcCode" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="BaseResultMapp" type="com.hema.newretail.backstage.entry.BaseFuncGroupIsSelectEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="func_group_code" property="funcGroupCode" jdbcType="VARCHAR" />
+    <result column="func_group_name" property="funcGroupName" jdbcType="VARCHAR" />
+    <result column="moudle_code" property="moudleCode" jdbcType="VARCHAR" />
+    <result column="moudle_name" property="moudleName" jdbcType="VARCHAR" />
+    <result column="func_code" property="funcCode" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="BIT" />
+    <result column="isSelected" property="isSelected" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap type="com.hema.newretail.backstage.model.authority.BaseFuncGroupMoudleBo" id="BaseResultMappp">
+    <result jdbcType="VARCHAR" property="moudleCode" column="moudle_code"/>
+    <result jdbcType="VARCHAR" property="moudleName" column="moudle_name"/>
+    <result jdbcType="BIGINT" property="postId" column="postId"/>
+
+    <collection property="list" select="isSelectedAll" column="{moudleCode = moudle_code , postId = postId}" javaType="java.util.ArrayList"
+                ofType="BaseResultMapp"></collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, func_group_code, func_group_name, moudle_code, moudle_name, func_code, gmt_create, 
+    gmt_modified, is_delete
+  </sql>
+  <select id="selectBaseFuncGroupMoudleBo" resultMap="BaseResultMappp">
+   select DISTINCT b.moudle_code ,b.moudle_name, ${postId} as
+    postId FROM  base_func_group b where b.is_delete = 0
+  </select>
+  <select id="isSelectedAll" resultType="com.hema.newretail.backstage.model.authority.BaseFuncGroupBo" parameterType="java.util.Map" >
+     select DISTINCT b.func_group_code as funcGroupCode,b.func_group_name as funcGroupName, (
+	select count(DISTINCT r.post_id) from
+	ref_post_func_group as r where r.func_group_code=
+b.func_group_code and r.post_id = ${postId}
+) as isSelected
+from base_func_group as b where b.is_delete = 0
+and b.moudle_code = ${moudleCode}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap"  >
+  select
+  <include refid="Base_Column_List" />
+  from base_func_group
+  where is_delete = 0
+</select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_func_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_func_group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseFuncGroup" >
+    insert into base_func_group (id, func_group_code, func_group_name, 
+      moudle_code, moudle_name, func_code, 
+      gmt_create, gmt_modified, is_delete
+      )
+    values (#{id,jdbcType=BIGINT}, #{funcGroupCode,jdbcType=VARCHAR}, #{funcGroupName,jdbcType=VARCHAR}, 
+      #{moudleCode,jdbcType=VARCHAR}, #{moudleName,jdbcType=VARCHAR}, #{funcCode,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseFuncGroup" >
+    insert into base_func_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="funcGroupCode != null" >
+        func_group_code,
+      </if>
+      <if test="funcGroupName != null" >
+        func_group_name,
+      </if>
+      <if test="moudleCode != null" >
+        moudle_code,
+      </if>
+      <if test="moudleName != null" >
+        moudle_name,
+      </if>
+      <if test="funcCode != null" >
+        func_code,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="funcGroupCode != null" >
+        #{funcGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="funcGroupName != null" >
+        #{funcGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="moudleCode != null" >
+        #{moudleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="moudleName != null" >
+        #{moudleName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcCode != null" >
+        #{funcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseFuncGroup" >
+    update base_func_group
+    <set >
+      <if test="funcGroupCode != null" >
+        func_group_code = #{funcGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="funcGroupName != null" >
+        func_group_name = #{funcGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="moudleCode != null" >
+        moudle_code = #{moudleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="moudleName != null" >
+        moudle_name = #{moudleName,jdbcType=VARCHAR},
+      </if>
+      <if test="funcCode != null" >
+        func_code = #{funcCode,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseFuncGroup" >
+    update base_func_group
+    set func_group_code = #{funcGroupCode,jdbcType=VARCHAR},
+      func_group_name = #{funcGroupName,jdbcType=VARCHAR},
+      moudle_code = #{moudleCode,jdbcType=VARCHAR},
+      moudle_name = #{moudleName,jdbcType=VARCHAR},
+      func_code = #{funcCode,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

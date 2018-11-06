@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMachineBoxLogMapper">
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="box_code" jdbcType="INTEGER" property="boxCode" />
+    <result column="ingredient_id" jdbcType="BIGINT" property="ingredientId" />
+    <result column="duration" jdbcType="INTEGER" property="duration" />
+    <result column="capacity" jdbcType="INTEGER" property="capacity" />
+    <result column="max_copies" jdbcType="INTEGER" property="maxCopies" />
+    <result column="warn_percent" jdbcType="REAL" property="warnPercent" />
+    <result column="geo_hash" jdbcType="VARCHAR" property="geoHash" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="gmt_create" jdbcType="BIGINT" property="gmtCreate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, box_code, ingredient_id, duration, capacity, max_copies, warn_percent, geo_hash, 
+    status, gmt_create
+  </sql>
+  <resultMap id="BaseMap" type="com.hema.newretail.backstage.model.grid.BoxLogBo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="box_code" jdbcType="INTEGER" property="boxCode" />
+    <result column="ingredient_name" jdbcType="BIGINT" property="ingredientName" />
+  </resultMap>
+
+
+  <select id="selectByCreate" parameterType="java.lang.Long" resultMap="BaseMap">
+SELECT
+	l.box_code,
+	i.ingredient_name
+FROM
+	base_machine_box_log l
+LEFT JOIN base_ingredient_info i ON l.ingredient_id = i.id
+WHERE
+l.gmt_create = #{version,jdbcType=BIGINT}
+  </select>
+
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_machine_box_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from base_machine_box_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
+    insert into base_machine_box_log (id, box_code, ingredient_id, 
+      duration, capacity, max_copies, 
+      warn_percent, geo_hash, status, 
+      gmt_create)
+    values (#{id,jdbcType=BIGINT}, #{boxCode,jdbcType=INTEGER}, #{ingredientId,jdbcType=BIGINT}, 
+      #{duration,jdbcType=INTEGER}, #{capacity,jdbcType=INTEGER}, #{maxCopies,jdbcType=INTEGER}, 
+      #{warnPercent,jdbcType=REAL}, #{geoHash,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{gmtCreate,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
+    insert into base_machine_box_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="boxCode != null">
+        box_code,
+      </if>
+      <if test="ingredientId != null">
+        ingredient_id,
+      </if>
+      <if test="duration != null">
+        duration,
+      </if>
+      <if test="capacity != null">
+        capacity,
+      </if>
+      <if test="maxCopies != null">
+        max_copies,
+      </if>
+      <if test="warnPercent != null">
+        warn_percent,
+      </if>
+      <if test="geoHash != null">
+        geo_hash,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="boxCode != null">
+        #{boxCode,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientId != null">
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null">
+        #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="maxCopies != null">
+        #{maxCopies,jdbcType=INTEGER},
+      </if>
+      <if test="warnPercent != null">
+        #{warnPercent,jdbcType=REAL},
+      </if>
+      <if test="geoHash != null">
+        #{geoHash,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
+    update base_machine_box_log
+    <set>
+      <if test="boxCode != null">
+        box_code = #{boxCode,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientId != null">
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null">
+        duration = #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null">
+        capacity = #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="maxCopies != null">
+        max_copies = #{maxCopies,jdbcType=INTEGER},
+      </if>
+      <if test="warnPercent != null">
+        warn_percent = #{warnPercent,jdbcType=REAL},
+      </if>
+      <if test="geoHash != null">
+        geo_hash = #{geoHash,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseMachineBoxLogEntry">
+    update base_machine_box_log
+    set box_code = #{boxCode,jdbcType=INTEGER},
+      ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      duration = #{duration,jdbcType=INTEGER},
+      capacity = #{capacity,jdbcType=INTEGER},
+      max_copies = #{maxCopies,jdbcType=INTEGER},
+      warn_percent = #{warnPercent,jdbcType=REAL},
+      geo_hash = #{geoHash,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefPostFuncGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefPostFuncGroup" >
+    <result column="post_id" property="postId" jdbcType="BIGINT" />
+    <result column="func_group_code" property="funcGroupCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefPostFuncGroup" >
+    insert into ref_post_func_group (post_id, func_group_code)
+    values (#{postId,jdbcType=BIGINT}, #{funcGroupCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefPostFuncGroup" >
+    insert into ref_post_func_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        post_id,
+      </if>
+      <if test="funcGroupCode != null" >
+        func_group_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        #{postId,jdbcType=BIGINT},
+      </if>
+      <if test="funcGroupCode != null" >
+        #{funcGroupCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

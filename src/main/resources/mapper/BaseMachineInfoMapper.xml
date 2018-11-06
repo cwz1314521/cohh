@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMachineInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="color_type_id" property="colorTypeId" jdbcType="BIGINT" />
+    <result column="machine_name" property="machineName" jdbcType="VARCHAR" />
+    <result column="machine_uuid" property="machineUuid" jdbcType="VARCHAR" />
+    <result column="machine_code" property="machineCode" jdbcType="VARCHAR" />
+    <result column="machine_type_id" property="machineTypeId" jdbcType="INTEGER" />
+    <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+    <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+    <result column="is_deleted" property="isDeleted" jdbcType="CHAR" />
+    <result column="service_num" property="serviceNum" jdbcType="INTEGER" />
+    <result column="hashcode" property="hashcode" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="street" property="street" jdbcType="VARCHAR" />
+    <result column="adcode" property="adcode" jdbcType="VARCHAR" />
+    <result column="fromType" property="fromtype" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" extends="BaseResultMap" >
+    <result column="machine_desc" property="machineDesc" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, color_type_id, machine_name, machine_uuid, machine_code, 
+    machine_type_id, longitude, latitude, is_deleted, service_num, hashcode, province, 
+    city, area, street, adcode, fromType
+  </sql>
+  <sql id="Blob_Column_List" >
+    machine_desc
+  </sql>
+  <select id="selectByUId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from base_machine_info
+    where machine_uuid = #{machineUuid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from base_machine_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_machine_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    insert into base_machine_info (id, gmt_create, gmt_modified, 
+      color_type_id, machine_name, machine_uuid, 
+      machine_code, machine_type_id, longitude, 
+      latitude, is_deleted, service_num, 
+      hashcode, province, city, 
+      area, street, adcode, 
+      fromType, machine_desc)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{colorTypeId,jdbcType=BIGINT}, #{machineName,jdbcType=VARCHAR}, #{machineUuid,jdbcType=VARCHAR}, 
+      #{machineCode,jdbcType=VARCHAR}, #{machineTypeId,jdbcType=INTEGER}, #{longitude,jdbcType=DOUBLE}, 
+      #{latitude,jdbcType=DOUBLE}, #{isDeleted,jdbcType=CHAR}, #{serviceNum,jdbcType=INTEGER}, 
+      #{hashcode,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{adcode,jdbcType=VARCHAR}, 
+      #{fromtype,jdbcType=VARCHAR}, #{machineDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    insert into base_machine_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="colorTypeId != null" >
+        color_type_id,
+      </if>
+      <if test="machineName != null" >
+        machine_name,
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid,
+      </if>
+      <if test="machineCode != null" >
+        machine_code,
+      </if>
+      <if test="machineTypeId != null" >
+        machine_type_id,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="serviceNum != null" >
+        service_num,
+      </if>
+      <if test="hashcode != null" >
+        hashcode,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="street != null" >
+        street,
+      </if>
+      <if test="adcode != null" >
+        adcode,
+      </if>
+      <if test="fromtype != null" >
+        fromType,
+      </if>
+      <if test="machineDesc != null" >
+        machine_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="colorTypeId != null" >
+        #{colorTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="machineName != null" >
+        #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineUuid != null" >
+        #{machineUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null" >
+        #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineTypeId != null" >
+        #{machineTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DOUBLE},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DOUBLE},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=CHAR},
+      </if>
+      <if test="serviceNum != null" >
+        #{serviceNum,jdbcType=INTEGER},
+      </if>
+      <if test="hashcode != null" >
+        #{hashcode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null" >
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="adcode != null" >
+        #{adcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fromtype != null" >
+        #{fromtype,jdbcType=VARCHAR},
+      </if>
+      <if test="machineDesc != null" >
+        #{machineDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    update base_machine_info
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="colorTypeId != null" >
+        color_type_id = #{colorTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="machineName != null" >
+        machine_name = #{machineName,jdbcType=VARCHAR},
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="machineCode != null" >
+        machine_code = #{machineCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machineTypeId != null" >
+        machine_type_id = #{machineTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DOUBLE},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DOUBLE},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=CHAR},
+      </if>
+      <if test="serviceNum != null" >
+        service_num = #{serviceNum,jdbcType=INTEGER},
+      </if>
+      <if test="hashcode != null" >
+        hashcode = #{hashcode,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null" >
+        street = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="adcode != null" >
+        adcode = #{adcode,jdbcType=VARCHAR},
+      </if>
+      <if test="fromtype != null" >
+        fromType = #{fromtype,jdbcType=VARCHAR},
+      </if>
+      <if test="machineDesc != null" >
+        machine_desc = #{machineDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    update base_machine_info
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      color_type_id = #{colorTypeId,jdbcType=BIGINT},
+      machine_name = #{machineName,jdbcType=VARCHAR},
+      machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      machine_code = #{machineCode,jdbcType=VARCHAR},
+      machine_type_id = #{machineTypeId,jdbcType=INTEGER},
+      longitude = #{longitude,jdbcType=DOUBLE},
+      latitude = #{latitude,jdbcType=DOUBLE},
+      is_deleted = #{isDeleted,jdbcType=CHAR},
+      service_num = #{serviceNum,jdbcType=INTEGER},
+      hashcode = #{hashcode,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      street = #{street,jdbcType=VARCHAR},
+      adcode = #{adcode,jdbcType=VARCHAR},
+      fromType = #{fromtype,jdbcType=VARCHAR},
+      machine_desc = #{machineDesc,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseMachineInfoEntry" >
+    update base_machine_info
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      color_type_id = #{colorTypeId,jdbcType=BIGINT},
+      machine_name = #{machineName,jdbcType=VARCHAR},
+      machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      machine_code = #{machineCode,jdbcType=VARCHAR},
+      machine_type_id = #{machineTypeId,jdbcType=INTEGER},
+      longitude = #{longitude,jdbcType=DOUBLE},
+      latitude = #{latitude,jdbcType=DOUBLE},
+      is_deleted = #{isDeleted,jdbcType=CHAR},
+      service_num = #{serviceNum,jdbcType=INTEGER},
+      hashcode = #{hashcode,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      street = #{street,jdbcType=VARCHAR},
+      adcode = #{adcode,jdbcType=VARCHAR},
+      fromType = #{fromtype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseIngredientBoxMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseIngredientBoxEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="box_code" property="boxCode" jdbcType="INTEGER" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="duration" property="duration" jdbcType="INTEGER" />
+    <result column="capacity" property="capacity" jdbcType="INTEGER" />
+    <result column="max_copies" property="maxCopies" jdbcType="INTEGER" />
+    <result column="warn_percent" property="warnPercent" jdbcType="REAL" />
+    <result column="box_group_id" property="boxGroupId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BaseResultOrInfoMap" type="com.hema.newretail.backstage.model.tag.BaseIngredientBoxInfoBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="box_code" property="boxCode" jdbcType="INTEGER" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="duration" property="duration" jdbcType="INTEGER" />
+    <result column="capacity" property="capacity" jdbcType="INTEGER" />
+    <result column="max_copies" property="maxCopies" jdbcType="INTEGER" />
+    <result column="warn_percent" property="warnPercent" jdbcType="REAL" />
+    <result column="box_group_id" property="boxGroupId" jdbcType="BIGINT" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="boxCode" property="boxCodes" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, box_code, ingredient_id, duration, capacity, max_copies, warn_percent, box_group_id, 
+    status
+  </sql>
+
+
+  <select id="selectBoxOrInfoByBoxGroupId" resultMap="BaseResultOrInfoMap" parameterType="java.lang.Long" >
+
+select
+    b.id, b.box_code, b.ingredient_id, b.duration, b.capacity, b.max_copies,
+    b.warn_percent, b.box_group_id, i.ingredient_name ,GROUP_CONCAT(b.box_code SEPARATOR ',') as boxCode
+    from base_ingredient_box b,base_ingredient_info i
+    where b.ingredient_id = i.id and b.box_group_id = #{boxGroupId,jdbcType=BIGINT}
+		GROUP BY b.ingredient_id
+  </select>
+  <select id="selectByBoxGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from base_ingredient_box
+    where box_group_id = #{boxGroupId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByGroupId" parameterType="java.lang.Long" >
+    delete from base_ingredient_box
+    where box_group_id = #{boxGroupId,jdbcType=BIGINT}
+  </delete>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_ingredient_box
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_ingredient_box
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseIngredientBoxEntry" >
+    insert into base_ingredient_box (id, box_code, ingredient_id, 
+      duration, capacity, max_copies, 
+      warn_percent, box_group_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{boxCode,jdbcType=INTEGER}, #{ingredientId,jdbcType=BIGINT}, 
+      #{duration,jdbcType=INTEGER}, #{capacity,jdbcType=INTEGER}, #{maxCopies,jdbcType=INTEGER}, 
+      #{warnPercent,jdbcType=REAL}, #{boxGroupId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseIngredientBoxEntry" >
+    insert into base_ingredient_box
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="boxCode != null" >
+        box_code,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+      <if test="capacity != null" >
+        capacity,
+      </if>
+      <if test="maxCopies != null" >
+        max_copies,
+      </if>
+      <if test="warnPercent != null" >
+        warn_percent,
+      </if>
+      <if test="boxGroupId != null" >
+        box_group_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="boxCode != null" >
+        #{boxCode,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null" >
+        #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="maxCopies != null" >
+        #{maxCopies,jdbcType=INTEGER},
+      </if>
+      <if test="warnPercent != null" >
+        #{warnPercent,jdbcType=REAL},
+      </if>
+      <if test="boxGroupId != null" >
+        #{boxGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseIngredientBoxEntry" >
+    update base_ingredient_box
+    <set >
+      <if test="boxCode != null" >
+        box_code = #{boxCode,jdbcType=INTEGER},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null" >
+        duration = #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="capacity != null" >
+        capacity = #{capacity,jdbcType=INTEGER},
+      </if>
+      <if test="maxCopies != null" >
+        max_copies = #{maxCopies,jdbcType=INTEGER},
+      </if>
+      <if test="warnPercent != null" >
+        warn_percent = #{warnPercent,jdbcType=REAL},
+      </if>
+      <if test="boxGroupId != null" >
+        box_group_id = #{boxGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseIngredientBoxEntry" >
+    update base_ingredient_box
+    set box_code = #{boxCode,jdbcType=INTEGER},
+      ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      duration = #{duration,jdbcType=INTEGER},
+      capacity = #{capacity,jdbcType=INTEGER},
+      max_copies = #{maxCopies,jdbcType=INTEGER},
+      warn_percent = #{warnPercent,jdbcType=REAL},
+      box_group_id = #{boxGroupId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

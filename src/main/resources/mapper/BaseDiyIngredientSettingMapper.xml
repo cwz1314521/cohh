@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseDiyIngredientSettingMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseDiyIngredientSettingEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="max_ingredient" property="maxIngredient" jdbcType="DECIMAL" />
+    <result column="max_time" property="maxTime" jdbcType="INTEGER" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="marked_words" property="markedWords" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseEventMap" type="com.hema.newretail.backstage.model.diy.IngredientEventBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="max_ingredient" property="maxIngredient" jdbcType="DECIMAL" />
+    <result column="max_time" property="maxTime" jdbcType="INTEGER" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="eventAccount" property="eventAccount" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BaseEditSonMap" type="com.hema.newretail.backstage.model.diy.DetailEventSonBo" >
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="marked_words" property="markedWords" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseEditMap" type="com.hema.newretail.backstage.model.diy.DetailEventBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="max_ingredient" property="maxIngredient" jdbcType="DECIMAL" />
+    <result column="max_time" property="maxTime" jdbcType="INTEGER" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="marked_words" property="markedWords" jdbcType="VARCHAR" />
+    <collection property="list" select="isSelectedAll" column="id" javaType="java.util.ArrayList"
+                ofType="BaseEditSonMap"></collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, max_ingredient, max_time, gmt_create, gmt_modified, ingredient_id, marked_words
+  </sql>
+  <select id="selectDetail" resultMap="BaseEditMap">
+SELECT
+	s.id,
+	i.ingredient_name,
+	i.id ingredient_id,
+	s.max_ingredient,
+	s.max_time,
+s.marked_words
+FROM
+	base_diy_ingredient_setting s
+LEFT JOIN base_ingredient_info i ON s.ingredient_id = i.id
+where s.id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="isSelectedAll" resultMap="BaseEditSonMap" parameterType="java.lang.Long" >
+SELECT
+	i.ingredient_name,
+	e.ingredient_id,
+	e.marked_words
+FROM
+	base_diy_ingredient_event e
+LEFT JOIN base_ingredient_info i ON e.ingredient_id = i.id
+    where e.diy_setting_id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAllEvent" resultMap="BaseEventMap" parameterType="com.hema.newretail.backstage.common.queryparam.diy.NameCondition">
+SELECT
+	s.id,
+	i.ingredient_name,
+	s.max_ingredient,
+	s.max_time,
+	(
+		SELECT
+			count(*)
+		FROM
+			base_diy_ingredient_event e
+		WHERE
+			e.diy_setting_id = s.id
+	) + 1 AS eventAccount
+FROM
+	base_diy_ingredient_setting s
+LEFT JOIN base_ingredient_info i ON s.ingredient_id = i.id
+WHERE 1=1
+    <if test="message != null and message != ''" >
+      and i.ingredient_name like  "%"#{message,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_diy_ingredient_setting
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_diy_ingredient_setting
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientSettingEntry" >
+    insert into base_diy_ingredient_setting (id, max_ingredient, max_time, 
+      gmt_create, gmt_modified, ingredient_id, 
+      marked_words)
+    values (#{id,jdbcType=BIGINT}, #{maxIngredient,jdbcType=DECIMAL}, #{maxTime,jdbcType=INTEGER}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{ingredientId,jdbcType=BIGINT}, 
+      #{markedWords,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientSettingEntry" >
+    insert into base_diy_ingredient_setting
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="maxIngredient != null" >
+        max_ingredient,
+      </if>
+      <if test="maxTime != null" >
+        max_time,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="markedWords != null" >
+        marked_words,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="maxIngredient != null" >
+        #{maxIngredient,jdbcType=DECIMAL},
+      </if>
+      <if test="maxTime != null" >
+        #{maxTime,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="markedWords != null" >
+        #{markedWords,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientSettingEntry" >
+    update base_diy_ingredient_setting
+    <set >
+      <if test="maxIngredient != null" >
+        max_ingredient = #{maxIngredient,jdbcType=DECIMAL},
+      </if>
+      <if test="maxTime != null" >
+        max_time = #{maxTime,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="markedWords != null" >
+        marked_words = #{markedWords,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientSettingEntry" >
+    update base_diy_ingredient_setting
+    set max_ingredient = #{maxIngredient,jdbcType=DECIMAL},
+      max_time = #{maxTime,jdbcType=INTEGER},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      marked_words = #{markedWords,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

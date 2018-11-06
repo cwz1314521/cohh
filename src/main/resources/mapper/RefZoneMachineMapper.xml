@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefZoneMachineMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefZoneMachine" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="zone_id" property="zoneId" jdbcType="BIGINT" />
+    <result column="geo_hash" property="geoHash" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, zone_id, geo_hash
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ref_zone_machine
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ref_zone_machine
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefZoneMachine" >
+    insert into ref_zone_machine (id, zone_id, geo_hash
+      )
+    values (#{id,jdbcType=BIGINT}, #{zoneId,jdbcType=BIGINT}, #{geoHash,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefZoneMachine" >
+    insert into ref_zone_machine
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="zoneId != null" >
+        zone_id,
+      </if>
+      <if test="geoHash != null" >
+        geo_hash,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="zoneId != null" >
+        #{zoneId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHash != null" >
+        #{geoHash,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.RefZoneMachine" >
+    update ref_zone_machine
+    <set >
+      <if test="zoneId != null" >
+        zone_id = #{zoneId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHash != null" >
+        geo_hash = #{geoHash,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.RefZoneMachine" >
+    update ref_zone_machine
+    set zone_id = #{zoneId,jdbcType=BIGINT},
+      geo_hash = #{geoHash,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insertBatch" parameterType="java.util.ArrayList" >
+    insert into ref_zone_machine (id, zone_id, geo_hash)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.zoneId,jdbcType=BIGINT}, #{item.geoHash,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="selectByZoneid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from ref_zone_machine
+    where zone_id = #{zoneId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByZoneid" parameterType="java.lang.Long" >
+    delete from ref_zone_machine
+    where zone_id = #{zoneId,jdbcType=BIGINT}
+  </delete>
+  <select id="selectAllGruidByArea" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select zm.* from ref_zone_machine as zm where zm.zone_id in (
+      select z.id from base_zone as z
+      <where>
+        1=1
+        <if test="null != province and province != ''">
+          and z.province=#{province}
+        </if>
+        <if test="null != city and city != ''">
+          and z.city=#{city}
+        </if>
+        <if test="null != area and area != ''">
+          and z.area=#{area}
+        </if>
+      </where>
+    )
+  </select>
+</mapper>

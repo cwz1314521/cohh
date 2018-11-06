@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridCompanyGeohashMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridCompanyGeohashEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="grid_company_id" property="gridCompanyId" jdbcType="BIGINT" />
+    <result column="geo_hash_code" property="geoHashCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, grid_company_id, geo_hash_code
+  </sql>
+  <resultMap id="BaseHashResultMap" type="com.hema.newretail.backstage.model.grid.ServiceSonBo" >
+    <result column="geo_hash_code" property="geoHashCode" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+    <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+  </resultMap>
+  <resultMap id="GeoHashResult" type="java.lang.String" >
+    <result column="geo_hash_code" property="geoHashCode" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectGeoHash" resultMap="BaseHashResultMap" parameterType="java.lang.Long" >
+    SELECT DISTINCT
+	g.geo_hash_code,
+	b.longitude,
+	b.latitude
+FROM
+	grid_company_geohash g
+LEFT JOIN base_machine_info b ON g.geo_hash_code = b.hashcode
+    where g.grid_company_id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByCompanyId" parameterType="java.lang.Long" >
+    delete from grid_company_geohash
+    where grid_company_id = #{gridCompanyId,jdbcType=BIGINT}
+  </delete>
+  <select id="selectByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from grid_company_geohash
+    where grid_company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_company_geohash
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_company_geohash
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyGeohashEntry" >
+    insert into grid_company_geohash (id, grid_company_id, geo_hash_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{gridCompanyId,jdbcType=BIGINT}, #{geoHashCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyGeohashEntry" >
+    insert into grid_company_geohash
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id,
+      </if>
+      <if test="geoHashCode != null" >
+        geo_hash_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyId != null" >
+        #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHashCode != null" >
+        #{geoHashCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyGeohashEntry" >
+    update grid_company_geohash
+    <set >
+      <if test="gridCompanyId != null" >
+        grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHashCode != null" >
+        geo_hash_code = #{geoHashCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyGeohashEntry" >
+    update grid_company_geohash
+    set grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      geo_hash_code = #{geoHashCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="freeGeoHash" resultMap="GeoHashResult">
+    select geo_hash_code
+    from grid_company_geohash
+    where 1=1
+    <if test="mapGeoHash != null">
+      and geo_hash_code in
+      <foreach collection="mapGeoHash" index="index" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+
+  <select id="findGridCompanyGeoHashByCompanyId" resultMap="GeoHashResult" parameterType="java.lang.Long">
+    select geo_hash_code
+    from grid_company_geohash
+    where grid_company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+    <select id="selectCountByIdAndHashcode" resultType="java.lang.Long" parameterType="java.util.Map">
+        select count(g.id) as num from grid_company_geohash as g where g.grid_company_id=#{gridCompanyId} and g.geo_hash_code=#{geoHashCode}
+    </select>
+</mapper>

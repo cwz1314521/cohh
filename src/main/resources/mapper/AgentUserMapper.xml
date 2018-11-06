@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hema.newretail.backstage.dao.AgentUserMapper">
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.agent.AgentUserEntry">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="com.hema.newretail.backstage.model.agent.AgentListBo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="material_account" property="materialAccount" jdbcType="DECIMAL" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="account_number" jdbcType="VARCHAR" property="accountNumber" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="bank" jdbcType="VARCHAR" property="bank" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tel, is_deleted, status, gmt_modified, gmt_create, email, company_name,
+    company_code, contact_way, contact, province, city, area, addr,remark
+  </sql>
+  <update id="deleteById" parameterType="java.lang.Long">
+    UPDATE agent_user SET is_deleted = 1 WHERE id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectAgentList" resultMap="ListResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.agent.AgentListCondition">
+    SELECT
+    u.company_name,
+    u.id,
+    u.gmt_create,
+    u.`status`,
+    b.amount,
+    c.amount material_account,
+    u.tel,
+    u.contact,
+    u.contact_way,
+    u.province,
+    u.city,
+    u.area,
+    u.addr,
+    b.account_name account_name,
+    b.account_number account_number,
+    u.remark,
+    b.bank bank
+    FROM
+    agent_user u
+    LEFT JOIN busi_company_account b ON u.id = b.ref_id AND b.type = 1
+    LEFT JOIN busi_company_account c ON u.id = c.ref_id AND c.type = 2
+    WHERE
+    1 = 1
+    AND u.is_deleted = 0
+    <if test="province != null and province != ''">
+      and u.province = #{province}
+      <if test="city != null and city != ''">
+        and u.city = #{city}
+        <if test="area != null and area != ''">
+          and u.area in
+          <foreach item="item" index="index" collection="area" open="("  close=")" separator=",">
+            #{item}
+          </foreach>
+        </if>
+      </if>
+    </if>
+    <if test="id != null and id != ''">
+      and u.id = #{id}
+    </if>
+    <if test="status != null and status != ''">
+      and u.status=#{status}
+    </if>
+    <if test="name != null and name != ''">
+      and u.company_name like #{name,jdbcType=VARCHAR}"%"
+    </if>
+    order by u.id desc
+  </select>
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from agent_user
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from agent_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from agent_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true"   keyProperty="id" parameterType="com.hema.newretail.backstage.entry.agent.AgentUserEntry">
+    insert into agent_user (id, tel,
+      is_deleted, status, gmt_modified, 
+      gmt_create, email, company_name, 
+      company_code, contact_way, contact, 
+      province, city, area, 
+      addr,remark)
+    values (#{id,jdbcType=BIGINT}, #{tel,jdbcType=VARCHAR},
+      #{isDeleted,jdbcType=TINYINT}, #{status,jdbcType=INTEGER}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{email,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{companyCode,jdbcType=VARCHAR}, #{contactWay,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, 
+      #{addr,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.agent.AgentUserEntry">
+    insert into agent_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="contactWay != null">
+        contact_way,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="addr != null">
+        addr,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contactWay != null">
+        #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.agent.AgentUserEntry">
+    update agent_user
+    <set>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contactWay != null">
+        contact_way = #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.agent.AgentUserEntry">
+    update agent_user
+    set tel = #{tel,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      status = #{status,jdbcType=INTEGER},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      contact_way = #{contactWay,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

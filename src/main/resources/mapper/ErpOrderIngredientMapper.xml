@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ErpOrderIngredientMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.erp.ErpOrderIngredientEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="ingredient_order_address_id" property="ingredientOrderAddressId" jdbcType="BIGINT" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ingredient_order_address_id, ingredient_id, num
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from erp_order_ingredient
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from erp_order_ingredient
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderIngredientEntry" >
+    insert into erp_order_ingredient (id, ingredient_order_address_id, ingredient_id, 
+      num)
+    values (#{id,jdbcType=BIGINT}, #{ingredientOrderAddressId,jdbcType=BIGINT}, #{ingredientId,jdbcType=BIGINT}, 
+      #{num,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderIngredientEntry" >
+    insert into erp_order_ingredient
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ingredientOrderAddressId != null" >
+        ingredient_order_address_id,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientOrderAddressId != null" >
+        #{ingredientOrderAddressId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderIngredientEntry" >
+    update erp_order_ingredient
+    <set >
+      <if test="ingredientOrderAddressId != null" >
+        ingredient_order_address_id = #{ingredientOrderAddressId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderIngredientEntry" >
+    update erp_order_ingredient
+    set ingredient_order_address_id = #{ingredientOrderAddressId,jdbcType=BIGINT},
+      ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

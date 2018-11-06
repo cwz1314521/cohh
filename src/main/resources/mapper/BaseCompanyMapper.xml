@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hema.newretail.backstage.dao.BaseCompanyMapper">
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseCompanyData">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <resultMap id="SelectResultMap" type="com.hema.newretail.backstage.entry.BaseCompanyData">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contact_way" jdbcType="VARCHAR" property="contactWay" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+  <resultMap id="BaseSelectListMap" type="com.hema.newretail.backstage.model.erp.ListManufacturerBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_name, contact_way, contact, province, city, area, addr,
+    gmt_create, gmt_modified, status, remark
+  </sql>
+
+  <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
+    select
+    id,company_name
+    from base_company
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and company_name like #{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from base_company
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from base_company
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseCompanyData">
+    insert into base_company (id, company_name,
+      contact_way, contact, province, 
+      city, area, addr, gmt_create, 
+      gmt_modified,
+      status, remark)
+    values (#{id,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR},
+      #{contactWay,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP},
+      #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseCompanyData" useGeneratedKeys="true" keyProperty="id">
+    insert into base_company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="contactWay != null">
+        contact_way,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="addr != null">
+        addr,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactWay != null">
+        #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseCompanyData">
+    update base_company
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactWay != null">
+        contact_way = #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseCompanyData">
+    update base_company
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      contact_way = #{contactWay,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_company
+  </select>
+  <update id="updateStatusById" parameterType="com.hema.newretail.backstage.entry.BaseCompanyData">
+    update base_company set status = #{status,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findAll" parameterType="com.hema.newretail.backstage.common.queryparam.BaseCompanyQueryParameter" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_company
+    where 1=1
+    <if test="companyName != null and id != null">
+     and ( company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%') or id = #{id,jdbcType=BIGINT} )
+    </if>
+    <if test="companyName != null and id == null">
+      and company_name like CONCAT('%',#{companyName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="province != null and province != ''">
+     and province = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+     and city = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="area != null and area.size() != 0">
+      and area in
+      <foreach collection="area" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="status != null and status != ''">
+     and status = #{status,jdbcType=INTEGER}
+    </if>
+     order by gmt_create desc
+  </select>
+  <select id="findBaseCompanyByArea" parameterType="com.hema.newretail.backstage.common.queryparam.BaseCompanyNameQueryParameter" resultMap="SelectResultMap">
+    select
+    id, company_name, contact_way, contact, province, city, area, addr,
+    gmt_create, gmt_modified, status, remark, concat(province,city,area) address
+    from base_company
+    where 1=1
+    <if test="nameOrCode != null and nameOrCode != ''">
+      and company_name like CONCAT('%',#{nameOrCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="province != null and province != ''">
+      and province = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+      and city = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="area != null and area != ''">
+      and area = #{area,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="findCompanysByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_company
+    where 1=1
+    <if test="ids != null">
+      and id in
+      <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+        #{item,jdbcType=BIGINT}
+      </foreach>
+    </if>
+  </select>
+  <select id="countByCompanyName" resultType="int" parameterType="com.hema.newretail.backstage.common.queryparam.BaseCompanyNameParameter">
+    select count(0)
+    from base_company
+    where company_name = #{name,jdbcType=VARCHAR}
+  </select>
+</mapper>

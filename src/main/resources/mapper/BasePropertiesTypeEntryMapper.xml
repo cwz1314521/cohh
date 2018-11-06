@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BasePropertiesTypeEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BasePropertiesTypeEntry" >
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="properties_name" property="propertiesName" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, type_name, ingredient_id, status, properties_name, gmt_create, gmt_modified
+  </sql>
+  <resultMap id="TypeMap" type="com.hema.newretail.backstage.model.menuproperties.PropertyTypeBo" >
+    <result column="id" property="typeId" jdbcType="BIGINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="properties_name" property="propertiesName" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="PropertyMap" type="com.hema.newretail.backstage.model.menuproperties.MenuPropertisBo" >
+    <id column="id" property="propertiesId" jdbcType="BIGINT" />
+    <result column="pro_name" property="proName" jdbcType="VARCHAR" />
+    <result column="pro_type" property="typeId" jdbcType="BIGINT" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="num" property="num" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <resultMap id="BaseResult" type="com.hema.newretail.backstage.entry.BasePropertiesTypeEntry" >
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="properties_name" property="propertiesName" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectAll" resultMap="BaseResult">
+    select bpt.id, bpt.type_name, bpt.ingredient_id, bpt.status,
+            bpt.properties_name, bpt.gmt_create, bpt.gmt_modified,
+            bii.ingredient_name
+    from base_properties_type bpt
+    left join base_ingredient_info bii on bpt.ingredient_id = bii.id
+    order by bpt.gmt_modified desc
+  </select>
+
+  <delete id="deletePropertiesType" parameterType="java.lang.Long">
+    delete from base_properties_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <update id="updatePropertiesType" parameterType="com.hema.newretail.backstage.entry.BasePropertiesTypeEntry">
+    update base_properties_type
+    <set>
+      <if test="typeName != null" >
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="propertiesName != null" >
+        properties_name = #{propertiesName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByTypeName" parameterType="java.util.Map" resultType="java.lang.String">
+    select bpt.type_name
+    from base_properties_type bpt
+    where bpt.type_name = #{typeName, jdbcType = VARCHAR}
+    <if test="id != null" >
+      and not exists (select 1 from base_properties_type bp where bpt.id = bp.id and bp.id = #{id})
+    </if>
+  </select>
+
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BasePropertiesTypeEntry" >
+    insert into base_properties_type (id, type_name, ingredient_id, 
+      status)
+    values (#{id,jdbcType=BIGINT}, #{typeName,jdbcType=VARCHAR}, #{ingredientId,jdbcType=BIGINT}, 
+      #{status,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BasePropertiesTypeEntry" >
+    insert into base_properties_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="typeName != null" >
+        type_name,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="propertiesName != null" >
+        properties_name,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="typeName != null" >
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="propertiesName != null" >
+        #{propertiesName,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectAllType" resultMap="TypeMap">
+    select pt.id, pt.type_name, pt.properties_name from base_properties_type as pt where pt.`status`=1
+  </select>
+  <select id="selectAllProByTypeId" parameterType="java.lang.Long" resultMap="PropertyMap">
+    select mp.id,mp.pro_name,mp.pro_type,mp.price,mp.num from base_menu_properties as mp where mp.is_deleted=0 and mp.`status`=0 and mp.pro_type=#{id}
+  </select>
+</mapper>

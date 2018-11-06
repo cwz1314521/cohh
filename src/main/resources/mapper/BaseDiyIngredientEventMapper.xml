@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseDiyIngredientEventMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseDiyIngredientEventEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="diy_setting_id" property="diySettingId" jdbcType="BIGINT" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="marked_words" property="markedWords" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, diy_setting_id, ingredient_id, marked_words
+  </sql>
+
+  <delete id="deleteBySettingId" parameterType="java.lang.Long" >
+    delete from base_diy_ingredient_event
+    where diy_setting_id = #{id,jdbcType=BIGINT}
+  </delete>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_diy_ingredient_event
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_diy_ingredient_event
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientEventEntry" >
+    insert into base_diy_ingredient_event (id, diy_setting_id, ingredient_id, 
+      marked_words)
+    values (#{id,jdbcType=BIGINT}, #{diySettingId,jdbcType=BIGINT}, #{ingredientId,jdbcType=BIGINT}, 
+      #{markedWords,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientEventEntry" >
+    insert into base_diy_ingredient_event
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="diySettingId != null" >
+        diy_setting_id,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="markedWords != null" >
+        marked_words,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="diySettingId != null" >
+        #{diySettingId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="markedWords != null" >
+        #{markedWords,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientEventEntry" >
+    update base_diy_ingredient_event
+    <set >
+      <if test="diySettingId != null" >
+        diy_setting_id = #{diySettingId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="markedWords != null" >
+        marked_words = #{markedWords,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseDiyIngredientEventEntry" >
+    update base_diy_ingredient_event
+    set diy_setting_id = #{diySettingId,jdbcType=BIGINT},
+      ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      marked_words = #{markedWords,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

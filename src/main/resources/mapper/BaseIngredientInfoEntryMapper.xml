@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseIngredientInfoEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="ingredient_name" property="ingredientName" jdbcType="VARCHAR" />
+    <result column="ingredient_description" property="ingredientDescription" jdbcType="VARCHAR" />
+    <result column="ingredient_pic" property="ingredientPic" jdbcType="VARCHAR" />
+    <result column="ingredient_code" property="ingredientCode" jdbcType="VARCHAR" />
+    <result column="ingredient_price" property="ingredientPrice" jdbcType="DECIMAL" />
+    <result column="ingredient_unit_price" property="ingredientUnitPrice" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="BaseSelectListMap" type="com.hema.newretail.backstage.model.erp.ListManufacturerBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="ingredient_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, ingredient_name, ingredient_description,
+    ingredient_pic, ingredient_price, ingredient_code, ingredient_unit_price
+  </sql>
+  <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
+    select
+    id,ingredient_name
+    from base_ingredient_info
+    where 1 = 1
+    <if test="companyName != null and companyName !=''" >
+      and ingredient_name like #{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_ingredient_info
+    order by gmt_create desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from base_ingredient_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_ingredient_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
+    insert into base_ingredient_info (id, gmt_create, gmt_modified,
+      ingredient_name, ingredient_code, ingredient_description,
+      ingredient_pic, ingredient_price, ingredient_unit_price)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},#{ingredientCode,jdbcType=VARCHAR},
+      #{ingredientName,jdbcType=VARCHAR}, #{ingredientDescription,jdbcType=VARCHAR},
+      #{ingredientPic,jdbcType=VARCHAR}, #{ingredientPrice,jdbcType=DECIMAL}, #{ingredientUnitPrice,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
+    insert into base_ingredient_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="ingredientName != null" >
+        ingredient_name,
+      </if>
+      <if test="ingredientDescription != null" >
+        ingredient_description,
+      </if>
+      <if test="ingredientPic != null" >
+        ingredient_pic,
+      </if>
+      <if test="ingredientPrice != null" >
+        ingredient_price,
+      </if>
+      <if test="ingredientCode != null" >
+        ingredient_code,
+      </if>
+      <if test="ingredientUnitPrice != null" >
+        ingredient_unit_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientName != null" >
+        #{ingredientName,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientDescription != null" >
+        #{ingredientDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientPic != null" >
+        #{ingredientPic,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientPrice != null" >
+        #{ingredientPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ingredientCode != null" >
+        #{ingredientCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientUnitPrice != null" >
+        #{ingredientUnitPrice,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
+    update base_ingredient_info
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ingredientName != null" >
+        ingredient_name = #{ingredientName,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientDescription != null" >
+        ingredient_description = #{ingredientDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientPic != null" >
+        ingredient_pic = #{ingredientPic,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientPrice != null" >
+        ingredient_price = #{ingredientPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ingredientCode != null" >
+        ingredient_code = #{ingredientCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredientUnitPrice != null" >
+        ingredient_unit_price = #{ingredientUnitPrice,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseIngredientInfoEntry" >
+    update base_ingredient_info
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      ingredient_name = #{ingredientName,jdbcType=VARCHAR},
+      ingredient_description = #{ingredientDescription,jdbcType=VARCHAR},
+      ingredient_pic = #{ingredientPic,jdbcType=VARCHAR},
+      ingredient_code = #{ingredientCode,jdbcType=VARCHAR},
+      ingredient_price = #{ingredientPrice,jdbcType=DECIMAL},
+      ingredient_unit_price = #{ingredientUnitPrice,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findAll" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from base_ingredient_info
+    <where>
+      1=1
+      <if test="keyword!=null">
+        and ingredient_name like CONCAT('%',#{keyword},'%')
+      </if>
+      order by gmt_create asc
+    </where>
+  </select>
+  <select id="countByRefMenuIngredient" resultType="int" parameterType="long">
+    select count(0) from ref_menu_ingredient
+    <where>
+      ingredient_id = #{id}
+    </where>
+  </select>
+  <select id="countByBasePropertiesType" resultType="int" parameterType="long">
+    select count(0) from base_properties_type
+    <where>
+      ingredient_id = #{id}
+    </where>
+  </select>
+</mapper>

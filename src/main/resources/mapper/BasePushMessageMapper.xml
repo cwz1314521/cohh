@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BasePushMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BasePushMessageEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="CHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="grid_id" property="gridId" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="read_flag" property="readFlag" jdbcType="CHAR" />
+    <result column="receive_type" property="receiveType" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="BaseResultAgentMap" type="com.hema.newretail.backstage.model.agent.PushListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="agentName" property="agentName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, type, title, content, grid_id, create_date, read_flag, receive_type
+  </sql>
+
+
+  <select id="selectByAgent" resultMap="BaseResultAgentMap" >
+    SELECT
+	p.id,
+	p.title,
+	p.content,
+	p.create_date,
+	p.create_by,
+	GROUP_CONCAT(
+		(
+			SELECT
+				company_name
+			FROM
+				agent_user
+			WHERE
+				id = p.grid_id
+		) SEPARATOR ','
+	) AS agentName
+FROM
+	base_push_message p
+WHERE
+	p.receive_type = '0'
+GROUP BY
+	p.title
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into base_push_message (id, type, title,
+    content, grid_id, create_date,
+    read_flag, receive_type,create_by)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.type,jdbcType=CHAR}, #{item.title,jdbcType=VARCHAR},
+      #{item.content,jdbcType=VARCHAR}, #{item.gridId,jdbcType=BIGINT}, #{item.createDate,jdbcType=TIMESTAMP},
+      #{item.readFlag,jdbcType=CHAR}, #{item.receiveType,jdbcType=CHAR},#{item.createBy,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+</mapper>

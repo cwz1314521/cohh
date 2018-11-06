@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefMenuIngredientMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefMenuIngredient" >
+    <result column="ingredient_menu_id" property="ingredientMenuId" jdbcType="BIGINT" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="num" property="num" jdbcType="BIGINT" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredient" >
+    insert into ref_menu_ingredient (ingredient_menu_id, ingredient_id, num
+      )
+    values (#{ingredientMenuId,jdbcType=BIGINT}, #{ingredientId,jdbcType=BIGINT}, #{num,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredient" >
+    insert into ref_menu_ingredient
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectIngredientByMenuId" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.menu.RefMenuIngredientBo">
+    select mi.ingredient_menu_id as menuId, mi.ingredient_id as ingredientId, mi.num as num, info.ingredient_name as ingredientName
+    from ref_menu_ingredient as mi, base_ingredient_info as info
+    where mi.ingredient_id=info.id and mi.ingredient_menu_id = #{menuId}
+  </select>
+</mapper>

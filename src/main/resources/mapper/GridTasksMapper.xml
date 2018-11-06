@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridTasksMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="task_type" property="taskType" jdbcType="INTEGER" />
+    <result column="start_time" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="grid_user_id" property="gridUserId" jdbcType="BIGINT" />
+    <result column="pre_duration" property="preDuration" jdbcType="VARCHAR" />
+    <result column="task_code" property="taskCode" jdbcType="VARCHAR" />
+    <result column="task_status" property="taskStatus" jdbcType="INTEGER" />
+    <result column="machine_uuid" property="machineUuid" jdbcType="VARCHAR" />
+    <result column="assigner" property="assigner" jdbcType="BIGINT" />
+    <result column="assign_time" property="assignTime" jdbcType="TIMESTAMP" />
+    <result column="machine_lat" property="machineLat" jdbcType="DOUBLE" />
+    <result column="machine_lon" property="machineLon" jdbcType="DOUBLE" />
+    <result column="machine_desc" property="machineDesc" jdbcType="VARCHAR" />
+    <result column="geo_hash" property="geoHash" jdbcType="VARCHAR" />
+    <result column="task_start_pic" property="taskStartPic" jdbcType="VARCHAR" />
+    <result column="task_end_pic" property="taskEndPic" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hema.newretail.backstage.entry.grid.GridTasksEntry" extends="BaseResultMap" >
+    <result column="task_details" property="taskDetails" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap id="TaskResultMap" type="com.hema.newretail.backstage.model.grid.GridTaskBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="assign_time" property="assignTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="task_status" property="taskStatus" jdbcType="INTEGER" />
+    <result column="task_type" property="taskType" jdbcType="INTEGER" />
+    <result column="mId" property="mId" jdbcType="BIGINT" />
+    <result column="machine_name" property="machineName" jdbcType="VARCHAR" />
+    <result column="mAddr" property="addr" jdbcType="VARCHAR" />
+    <result column="cId" property="cId" jdbcType="BIGINT" />
+    <result column="assigner" property="assigner" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="times" property="times" jdbcType="BIGINT" />
+    <result column="bId" property="bId" jdbcType="BIGINT" />
+    <result column="bCompany_name" property="bCompanyName" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="task_details" property="taskDetails" jdbcType="VARCHAR" />
+    <result column="task_start_pic" property="taskStartPic" jdbcType="VARCHAR" />
+    <result column="task_end_pic" property="taskEndPic" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, task_type, start_time, end_time, grid_user_id, pre_duration, 
+    task_code, task_status, machine_uuid, assigner, assign_time, machine_lat, machine_lon, 
+    machine_desc, geo_hash, task_start_pic, task_end_pic
+  </sql>
+  <sql id="Blob_Column_List" >
+    task_details
+  </sql>
+    <select id="selectEditById" parameterType="com.hema.newretail.backstage.common.queryparam.grid.GridListTaskCondition" resultMap="TaskResultMap" >
+        SELECT
+        distinct
+        g.id,
+        g.gmt_create,
+        g.start_time,
+        g.assign_time,
+        g.end_time,
+        g.task_status,
+        g.task_type,
+        m.id mId,
+        UNIX_TIMESTAMP(g.end_time) - UNIX_TIMESTAMP(g.start_time) AS times,
+        m.machine_name,
+        c.company_name,
+        c.id cId,
+        b.id bId,
+        b.company_name bCompany_name,
+        m.street mAddr,
+        m.province,
+        m.city,
+        m.area,
+        u.user_name,
+        g.task_details,
+        g.task_start_pic,
+        g.task_end_pic,
+        g.assigner
+        FROM
+        grid_tasks g,
+        base_machine_info m,
+        grid_user_info u,
+        grid_company c,
+        base_company b
+        WHERE
+        g.machine_uuid = m.machine_uuid
+        AND g.grid_user_id = u.id
+        AND u.company_id = c.id
+        AND b.id = c.company_id
+        and g.id = #{id,jdbcType=BIGINT}
+    </select>
+  <select id="selectTaskByCondition" parameterType="com.hema.newretail.backstage.common.queryparam.grid.GridListTaskCondition" resultMap="TaskResultMap" >
+    SELECT
+    g.id,
+    g.gmt_create,
+    g.start_time,
+    g.assign_time,
+    g.end_time,
+    g.task_status,
+    g.task_type,
+    m.id mId,
+    UNIX_TIMESTAMP(g.end_time) - UNIX_TIMESTAMP(g.start_time) AS times,
+    m.machine_name,
+    c.company_name,
+    c.id cId,
+    b.id bId,
+    b.company_name bCompany_name,
+    m.street mAddr,
+    m.province,
+    m.city,
+    m.area,
+    u.user_name,
+    g.task_details,
+    g.task_start_pic,
+    g.task_end_pic
+    FROM
+    grid_tasks g,
+    base_machine_info m,
+    grid_user_info u,
+    grid_company c,
+    base_company b
+    WHERE
+    g.machine_uuid = m.machine_uuid
+    AND g.grid_user_id = u.id
+    AND u.company_id = c.id
+    AND b.id = c.company_id
+    <if test="preAssignTime != null" >
+      and g.assign_time between  #{preAssignTime,jdbcType=TIMESTAMP} and  #{assignTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="preEndTime != null" >
+      and g.end_time between  #{preEndTime,jdbcType=TIMESTAMP} and  #{endTime,jdbcType=TIMESTAMP}
+    </if>
+
+    <if test="taskStatus != null and taskStatus != ''">
+      and g.task_status in
+      <foreach item="item" index="index" collection="taskStatus" open="("  close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="taskType != null and taskType != ''">
+      and g.task_type in
+      <foreach item="item" index="index" collection="taskType" open="("  close=")" separator=",">
+        #{item}
+      </foreach>
+    </if>
+    <if test="wId != null" >
+      and c.id = #{wId,jdbcType=BIGINT}
+    </if>
+    <if test="taskCode != null" >
+      and g.task_code = #{taskCode,jdbcType=VARCHAR}
+    </if>
+    <if test="machineUuid != null" >
+      and m.id = #{machineUuid,jdbcType=BIGINT}
+    </if>
+    <if test="province != null and province != ''">
+      and m.province = #{province}
+      <if test="city != null and city != ''">
+        and m.city = #{city}
+        <if test="area != null and area != ''">
+          and m.area in
+          <foreach item="item" index="index" collection="area" open="("  close=")" separator=",">
+            #{item}
+          </foreach>
+        </if>
+      </if>
+    </if>
+    order by g.gmt_create desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from grid_tasks
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_tasks
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    insert into grid_tasks (id, gmt_create, gmt_modified, 
+      task_type, start_time, end_time, 
+      grid_user_id, pre_duration, task_code, 
+      task_status, machine_uuid, assigner, 
+      assign_time, machine_lat, machine_lon, 
+      machine_desc, geo_hash, task_start_pic, 
+      task_end_pic, task_details)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{taskType,jdbcType=INTEGER}, #{gmtCreate,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+      #{gridUserId,jdbcType=BIGINT}, #{preDuration,jdbcType=VARCHAR}, #{taskCode,jdbcType=VARCHAR}, 
+      #{taskStatus,jdbcType=INTEGER}, #{machineUuid,jdbcType=VARCHAR}, #{assigner,jdbcType=BIGINT}, 
+      #{assignTime,jdbcType=TIMESTAMP}, #{machineLat,jdbcType=DOUBLE}, #{machineLon,jdbcType=DOUBLE}, 
+      #{machineDesc,jdbcType=VARCHAR}, #{geoHash,jdbcType=VARCHAR}, #{taskStartPic,jdbcType=VARCHAR}, 
+      #{taskEndPic,jdbcType=VARCHAR}, #{taskDetails,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    insert into grid_tasks
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="taskType != null" >
+        task_type,
+      </if>
+      <if test="gmtCreate != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="gridUserId != null" >
+        grid_user_id,
+      </if>
+      <if test="preDuration != null" >
+        pre_duration,
+      </if>
+      <if test="taskCode != null" >
+        task_code,
+      </if>
+      <if test="taskStatus != null" >
+        task_status,
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid,
+      </if>
+      <if test="assigner != null" >
+        assigner,
+      </if>
+      <if test="assignTime != null" >
+        assign_time,
+      </if>
+      <if test="machineLat != null" >
+        machine_lat,
+      </if>
+      <if test="machineLon != null" >
+        machine_lon,
+      </if>
+      <if test="machineDesc != null" >
+        machine_desc,
+      </if>
+      <if test="geoHash != null" >
+        geo_hash,
+      </if>
+      <if test="taskStartPic != null" >
+        task_start_pic,
+      </if>
+      <if test="taskEndPic != null" >
+        task_end_pic,
+      </if>
+      <if test="taskDetails != null" >
+        task_details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskType != null" >
+        #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridUserId != null" >
+        #{gridUserId,jdbcType=BIGINT},
+      </if>
+      <if test="preDuration != null" >
+        #{preDuration,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCode != null" >
+        #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        #{taskStatus,jdbcType=INTEGER},
+      </if>
+      <if test="machineUuid != null" >
+        #{machineUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="assigner != null" >
+        #{assigner,jdbcType=BIGINT},
+      </if>
+      <if test="assignTime != null" >
+        #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="machineLat != null" >
+        #{machineLat,jdbcType=DOUBLE},
+      </if>
+      <if test="machineLon != null" >
+        #{machineLon,jdbcType=DOUBLE},
+      </if>
+      <if test="machineDesc != null" >
+        #{machineDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="geoHash != null" >
+        #{geoHash,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStartPic != null" >
+        #{taskStartPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskEndPic != null" >
+        #{taskEndPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDetails != null" >
+        #{taskDetails,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    update grid_tasks
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskType != null" >
+        task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null" >
+        start_time = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridUserId != null" >
+        grid_user_id = #{gridUserId,jdbcType=BIGINT},
+      </if>
+      <if test="preDuration != null" >
+        pre_duration = #{preDuration,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCode != null" >
+        task_code = #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        task_status = #{taskStatus,jdbcType=INTEGER},
+      </if>
+      <if test="machineUuid != null" >
+        machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="assigner != null" >
+        assigner = #{assigner,jdbcType=BIGINT},
+      </if>
+      <if test="assignTime != null" >
+        assign_time = #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="machineLat != null" >
+        machine_lat = #{machineLat,jdbcType=DOUBLE},
+      </if>
+      <if test="machineLon != null" >
+        machine_lon = #{machineLon,jdbcType=DOUBLE},
+      </if>
+      <if test="machineDesc != null" >
+        machine_desc = #{machineDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="geoHash != null" >
+        geo_hash = #{geoHash,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStartPic != null" >
+        task_start_pic = #{taskStartPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskEndPic != null" >
+        task_end_pic = #{taskEndPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDetails != null" >
+        task_details = #{taskDetails,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    update grid_tasks
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      task_type = #{taskType,jdbcType=INTEGER},
+      start_time = #{gmtCreate,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      grid_user_id = #{gridUserId,jdbcType=BIGINT},
+      pre_duration = #{preDuration,jdbcType=VARCHAR},
+      task_code = #{taskCode,jdbcType=VARCHAR},
+      task_status = #{taskStatus,jdbcType=INTEGER},
+      machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      assigner = #{assigner,jdbcType=BIGINT},
+      assign_time = #{assignTime,jdbcType=TIMESTAMP},
+      machine_lat = #{machineLat,jdbcType=DOUBLE},
+      machine_lon = #{machineLon,jdbcType=DOUBLE},
+      machine_desc = #{machineDesc,jdbcType=VARCHAR},
+      geo_hash = #{geoHash,jdbcType=VARCHAR},
+      task_start_pic = #{taskStartPic,jdbcType=VARCHAR},
+      task_end_pic = #{taskEndPic,jdbcType=VARCHAR},
+      task_details = #{taskDetails,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridTasksEntry" >
+    update grid_tasks
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      task_type = #{taskType,jdbcType=INTEGER},
+      start_time = #{gmtCreate,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      grid_user_id = #{gridUserId,jdbcType=BIGINT},
+      pre_duration = #{preDuration,jdbcType=VARCHAR},
+      task_code = #{taskCode,jdbcType=VARCHAR},
+      task_status = #{taskStatus,jdbcType=INTEGER},
+      machine_uuid = #{machineUuid,jdbcType=VARCHAR},
+      assigner = #{assigner,jdbcType=BIGINT},
+      assign_time = #{assignTime,jdbcType=TIMESTAMP},
+      machine_lat = #{machineLat,jdbcType=DOUBLE},
+      machine_lon = #{machineLon,jdbcType=DOUBLE},
+      machine_desc = #{machineDesc,jdbcType=VARCHAR},
+      geo_hash = #{geoHash,jdbcType=VARCHAR},
+      task_start_pic = #{taskStartPic,jdbcType=VARCHAR},
+      task_end_pic = #{taskEndPic,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

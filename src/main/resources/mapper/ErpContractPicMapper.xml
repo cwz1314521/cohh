@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ErpContractPicMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.erp.ErpContractPicEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="ingredient_manufacturer_id" property="ingredientManufacturerId" jdbcType="BIGINT" />
+    <result column="contract_pic_url" property="contractPics" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ingredient_manufacturer_id, contract_pic_url
+  </sql>
+
+  <insert id="inserts" parameterType="java.util.List" >
+    insert into erp_contract_pic (id, ingredient_manufacturer_id, contract_pic_url)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.ingredientManufacturerId,jdbcType=BIGINT}, #{item.contractPics,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <delete id="deleteByMId" parameterType="java.lang.Long" >
+    delete from erp_contract_pic
+    where ingredient_manufacturer_id = #{id,jdbcType=BIGINT}
+  </delete>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from erp_contract_pic
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from erp_contract_pic
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.erp.ErpContractPicEntry" >
+    insert into erp_contract_pic (id, ingredient_manufacturer_id, contract_pic_url
+      )
+    values (#{id,jdbcType=BIGINT}, #{ingredientManufacturerId,jdbcType=BIGINT}, #{contractPics,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpContractPicEntry" >
+    insert into erp_contract_pic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ingredientManufacturerId != null" >
+        ingredient_manufacturer_id,
+      </if>
+      <if test="contractPics != null" >
+        contract_pic_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientManufacturerId != null" >
+        #{ingredientManufacturerId,jdbcType=BIGINT},
+      </if>
+      <if test="contractPics != null" >
+        #{contractPics,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpContractPicEntry" >
+    update erp_contract_pic
+    <set >
+      <if test="ingredientManufacturerId != null" >
+        ingredient_manufacturer_id = #{ingredientManufacturerId,jdbcType=BIGINT},
+      </if>
+      <if test="contractPics != null" >
+        contract_pic_url = #{contractPics,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.erp.ErpContractPicEntry" >
+    update erp_contract_pic
+    set ingredient_manufacturer_id = #{ingredientManufacturerId,jdbcType=BIGINT},
+      contract_pic_url = #{contractPics,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

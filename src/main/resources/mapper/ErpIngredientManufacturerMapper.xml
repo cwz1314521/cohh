@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ErpIngredientManufacturerMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.erp.ErpIngredientManufacturerEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="BaseSelectListMap" type="com.hema.newretail.backstage.model.erp.ListManufacturerBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseListMap" type="com.hema.newretail.backstage.model.erp.ManufacturerListBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <collection property="contractPics" select="selectPic" column="id" javaType="java.util.ArrayList"
+                ofType="BasePicMap"></collection>
+  </resultMap>
+  <resultMap id="BasePicMap" type="java.lang.String" >
+    <result column="contract_pic_url" property="pic" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_name, password, company_code, company_name, remark, gmt_create, gmt_modified, 
+    is_deleted
+  </sql>
+
+  <select id="selectCountByUserName" resultType="java.lang.Integer" parameterType="java.lang.String">
+SELECT
+	count(*)
+FROM
+	erp_ingredient_manufacturer
+WHERE
+	user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCountByUserNameEdit" resultType="java.lang.Integer" >
+SELECT
+	count(*)
+FROM
+	erp_ingredient_manufacturer
+WHERE
+	user_name = #{userName,jdbcType=VARCHAR}
+AND id NOT IN (#{id,jdbcType=BIGINT})
+  </select>
+  <select id="selectByCondition" resultMap="BaseListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ManufacturerListCondition" >
+    select
+    id,user_name,company_code,company_name,remark,password
+    from erp_ingredient_manufacturer
+    where is_deleted = 0
+    <if test="id != null and id !=''" >
+      and id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="companyCode != null and companyCode !=''" >
+      and company_code = #{companyCode,jdbcType=BIGINT}
+    </if>
+    <if test="companyName != null and companyName !=''" >
+      and company_name like #{companyName,jdbcType=VARCHAR}"%"
+    </if>
+    <if test="userName != null and userName !=''" >
+      and user_name like #{userName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+  <select id="selectPic" resultMap="BasePicMap" parameterType="java.lang.Long" >
+    select
+    contract_pic_url
+    from erp_contract_pic
+    where ingredient_manufacturer_id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAllCount" resultType="java.lang.Integer">
+   select count(id) from `erp_ingredient_manufacturer` where YEAR(gmt_create)=YEAR(NOW())
+  </select>
+  <select id="selectBySelect" resultMap="BaseSelectListMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.ListManufacturerCondition" >
+    select
+    id,company_name
+    from erp_ingredient_manufacturer
+    where is_deleted = 0
+    <if test="companyName != null and companyName !=''" >
+      and company_name like #{companyName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from erp_ingredient_manufacturer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from erp_ingredient_manufacturer
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientManufacturerEntry" >
+    insert into erp_ingredient_manufacturer (id, user_name, password, 
+      company_code, company_name, remark, 
+      gmt_create, gmt_modified, is_deleted
+      )
+    values (#{id,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientManufacturerEntry" >
+    insert into erp_ingredient_manufacturer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="companyCode != null" >
+        company_code,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientManufacturerEntry" >
+    update erp_ingredient_manufacturer
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.erp.ErpIngredientManufacturerEntry" >
+    update erp_ingredient_manufacturer
+    set user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

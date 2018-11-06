@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.AgentCooperationModeMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.agent.AgentCooperationMode" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="agent_user_id" property="agentUserId" jdbcType="BIGINT" />
+    <result column="cooperation_mode" property="cooperationMode" jdbcType="DECIMAL" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, agent_user_id, cooperation_mode, gmt_create, effective_time
+  </sql>
+  <select id="selectByAgentUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from agent_cooperation_mode
+    where agent_user_id = #{agentUserId,jdbcType=BIGINT}
+    order by gmt_create desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from agent_cooperation_mode
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from agent_cooperation_mode
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.agent.AgentCooperationMode" >
+    insert into agent_cooperation_mode (id, agent_user_id, cooperation_mode, 
+      gmt_create, effective_time)
+    values (#{id,jdbcType=BIGINT}, #{agentUserId,jdbcType=BIGINT}, #{cooperationMode,jdbcType=DECIMAL}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{effectiveTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.agent.AgentCooperationMode" >
+    insert into agent_cooperation_mode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="agentUserId != null" >
+        agent_user_id,
+      </if>
+      <if test="cooperationMode != null" >
+        cooperation_mode,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="agentUserId != null" >
+        #{agentUserId,jdbcType=BIGINT},
+      </if>
+      <if test="cooperationMode != null" >
+        #{cooperationMode,jdbcType=DECIMAL},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveTime != null" >
+        #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.agent.AgentCooperationMode" >
+    update agent_cooperation_mode
+    <set >
+      <if test="agentUserId != null" >
+        agent_user_id = #{agentUserId,jdbcType=BIGINT},
+      </if>
+      <if test="cooperationMode != null" >
+        cooperation_mode = #{cooperationMode,jdbcType=DECIMAL},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.agent.AgentCooperationMode" >
+    update agent_cooperation_mode
+    set agent_user_id = #{agentUserId,jdbcType=BIGINT},
+      cooperation_mode = #{cooperationMode,jdbcType=DECIMAL},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      effective_time = #{effectiveTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

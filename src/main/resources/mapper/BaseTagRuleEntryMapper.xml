@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseTagRuleEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="tag_id" property="tagId" jdbcType="BIGINT" />
+    <result column="rule_type" property="ruleType" jdbcType="BIT" />
+    <result column="menu_id" property="menuId" jdbcType="BIGINT" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, tag_id, rule_type, menu_id, menu_name, num
+  </sql>
+  <select id="selectByMenuNameCount" resultType="java.lang.Integer" parameterType="com.hema.newretail.backstage.common.queryparam.authority.TagCondition" >
+    select
+    count(*)
+    from base_tag_rule
+    where menu_name = #{menuName,jdbcType=VARCHAR}
+    and tag_id = #{tagId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByTId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from base_tag_rule
+    where tag_id = #{tagId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_tag_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_tag_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteByMenuId" parameterType="java.lang.Long">
+    delete from base_tag_rule
+    where menu_id = #{menuId,jdbcType=BIGINT} and rule_type = 1
+  </delete>
+
+  <delete id="deleteByTId" parameterType="java.lang.Long" >
+    delete from base_tag_rule
+    where tag_id = #{tagId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    insert into base_tag_rule (id, tag_id, rule_type, 
+      menu_id, menu_name, num
+      )
+    values (#{id,jdbcType=BIGINT}, #{tagId,jdbcType=BIGINT}, #{ruleType,jdbcType=BIT}, 
+      #{menuId,jdbcType=BIGINT}, #{menuName,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    insert into base_tag_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="tagId != null" >
+        tag_id,
+      </if>
+      <if test="ruleType != null" >
+        rule_type,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="menuName != null" >
+        menu_name,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tagId != null" >
+        #{tagId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleType != null" >
+        #{ruleType,jdbcType=BIT},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    update base_tag_rule
+    <set >
+      <if test="tagId != null" >
+        tag_id = #{tagId,jdbcType=BIGINT},
+      </if>
+      <if test="ruleType != null" >
+        rule_type = #{ruleType,jdbcType=BIT},
+      </if>
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="menuName != null" >
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    update base_tag_rule
+    set tag_id = #{tagId,jdbcType=BIGINT},
+      rule_type = #{ruleType,jdbcType=BIT},
+      menu_id = #{menuId,jdbcType=BIGINT},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectDataByMenuid" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.menu.TagMenuBo">
+    select tr.menu_id as menuId, tr.num as num, tr.rule_type as ruleType, tag.id as tagId, tag.tagname as tagName
+    from base_tag_rule as tr, base_tag as tag
+    where tr.tag_id=tag.id and tag.is_deleted=0 and tr.rule_type=1 and tr.menu_id=#{menuId}
+  </select>
+  <update id="updateByTagidAndMenuid" parameterType="com.hema.newretail.backstage.entry.BaseTagRuleEntry" >
+    update base_tag_rule
+    set num = #{num,jdbcType=INTEGER}
+    where tag_id = #{tagId,jdbcType=BIGINT} and menu_id = #{menuId,jdbcType=BIGINT}
+  </update>
+</mapper>

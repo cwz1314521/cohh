@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefMenuIngredientEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefMenuIngredientEntry" >
+    <result column="ingredient_menu_id" property="ingredientMenuId" jdbcType="BIGINT" />
+    <result column="ingredient_id" property="ingredientId" jdbcType="BIGINT" />
+    <result column="num" property="num" jdbcType="BIGINT" />
+  </resultMap>
+
+  <insert id="saveMaterialList" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredientEntry">
+    insert into ref_menu_ingredient
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateMaterialList" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredientEntry">
+    update ref_menu_ingredient
+    <set >
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id = #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id = #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ingredient_menu_id = #{ingredientMenuId,jdbcType=BIGINT}
+  </update>
+
+  <delete id="deleteByIngredientMenuId" parameterType="java.lang.Long">
+    delete from ref_menu_ingredient
+    where ingredient_menu_id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredientEntry" >
+    insert into ref_menu_ingredient (ingredient_menu_id, ingredient_id, num
+      )
+    values (#{ingredientMenuId,jdbcType=BIGINT}, #{ingredientId,jdbcType=BIGINT}, #{num,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefMenuIngredientEntry" >
+    insert into ref_menu_ingredient
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        ingredient_menu_id,
+      </if>
+      <if test="ingredientId != null" >
+        ingredient_id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ingredientMenuId != null" >
+        #{ingredientMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="ingredientId != null" >
+        #{ingredientId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

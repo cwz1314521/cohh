@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridUserTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridUserTaskEntry" >
+    <id column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="task_status" property="taskStatus" jdbcType="INTEGER" />
+    <result column="task_start_time" property="taskStartTime" jdbcType="TIMESTAMP" />
+    <result column="task_end_time" property="taskEndTime" jdbcType="TIMESTAMP" />
+    <result column="kpi" property="kpi" jdbcType="DECIMAL" />
+    <result column="assessment_task_end_time" property="assessmentTaskEndTime" jdbcType="TIMESTAMP" />
+    <result column="task_start_pic" property="taskStartPic" jdbcType="VARCHAR" />
+    <result column="task_end_pic" property="taskEndPic" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    task_id, user_id, task_status, task_start_time, task_end_time, kpi, assessment_task_end_time, 
+    task_start_pic, task_end_pic
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_user_task
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_user_task
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.grid.GridUserTaskEntry" >
+    insert into grid_user_task (task_id, user_id, task_status, 
+      task_start_time, task_end_time, kpi, 
+      assessment_task_end_time, task_start_pic, 
+      task_end_pic)
+    values (#{taskId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{taskStatus,jdbcType=INTEGER}, 
+      #{taskStartTime,jdbcType=TIMESTAMP}, #{taskEndTime,jdbcType=TIMESTAMP}, #{kpi,jdbcType=DECIMAL}, 
+      #{assessmentTaskEndTime,jdbcType=TIMESTAMP}, #{taskStartPic,jdbcType=VARCHAR}, 
+      #{taskEndPic,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridUserTaskEntry" >
+    insert into grid_user_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="taskStatus != null" >
+        task_status,
+      </if>
+      <if test="taskStartTime != null" >
+        task_start_time,
+      </if>
+      <if test="taskEndTime != null" >
+        task_end_time,
+      </if>
+      <if test="kpi != null" >
+        kpi,
+      </if>
+      <if test="assessmentTaskEndTime != null" >
+        assessment_task_end_time,
+      </if>
+      <if test="taskStartPic != null" >
+        task_start_pic,
+      </if>
+      <if test="taskEndPic != null" >
+        task_end_pic,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="taskStatus != null" >
+        #{taskStatus,jdbcType=INTEGER},
+      </if>
+      <if test="taskStartTime != null" >
+        #{taskStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskEndTime != null" >
+        #{taskEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kpi != null" >
+        #{kpi,jdbcType=DECIMAL},
+      </if>
+      <if test="assessmentTaskEndTime != null" >
+        #{assessmentTaskEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskStartPic != null" >
+        #{taskStartPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskEndPic != null" >
+        #{taskEndPic,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridUserTaskEntry" >
+    update grid_user_task
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="taskStatus != null" >
+        task_status = #{taskStatus,jdbcType=INTEGER},
+      </if>
+      <if test="taskStartTime != null" >
+        task_start_time = #{taskStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskEndTime != null" >
+        task_end_time = #{taskEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kpi != null" >
+        kpi = #{kpi,jdbcType=DECIMAL},
+      </if>
+      <if test="assessmentTaskEndTime != null" >
+        assessment_task_end_time = #{assessmentTaskEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskStartPic != null" >
+        task_start_pic = #{taskStartPic,jdbcType=VARCHAR},
+      </if>
+      <if test="taskEndPic != null" >
+        task_end_pic = #{taskEndPic,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridUserTaskEntry" >
+    update grid_user_task
+    set user_id = #{userId,jdbcType=BIGINT},
+      task_status = #{taskStatus,jdbcType=INTEGER},
+      task_start_time = #{taskStartTime,jdbcType=TIMESTAMP},
+      task_end_time = #{taskEndTime,jdbcType=TIMESTAMP},
+      kpi = #{kpi,jdbcType=DECIMAL},
+      assessment_task_end_time = #{assessmentTaskEndTime,jdbcType=TIMESTAMP},
+      task_start_pic = #{taskStartPic,jdbcType=VARCHAR},
+      task_end_pic = #{taskEndPic,jdbcType=VARCHAR}
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </update>
+</mapper>

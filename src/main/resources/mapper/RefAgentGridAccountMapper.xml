@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.RefAgentGridAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.RefAgentGridAccount" >
+    <result column="agent_id" property="agentId" jdbcType="BIGINT" />
+    <result column="grid_company_id" property="gridCompanyId" jdbcType="BIGINT" />
+    <result column="grid_company_name" property="gridCompanyName" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="DECIMAL" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="effective_time" property="effectiveTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.RefAgentGridAccount" >
+    insert into ref_agent_grid_account (agent_id, grid_company_id, grid_company_name, 
+      account, gmt_create, effective_time
+      )
+    values (#{agentId,jdbcType=BIGINT}, #{gridCompanyId,jdbcType=BIGINT}, #{gridCompanyName,jdbcType=VARCHAR}, 
+      #{account,jdbcType=DECIMAL}, #{gmtCreate,jdbcType=TIMESTAMP}, #{effectiveTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.RefAgentGridAccount" >
+    insert into ref_agent_grid_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="agentId != null" >
+        agent_id,
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id,
+      </if>
+      <if test="gridCompanyName != null" >
+        grid_company_name,
+      </if>
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="agentId != null" >
+        #{agentId,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyId != null" >
+        #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyName != null" >
+        #{gridCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=DECIMAL},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveTime != null" >
+        #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

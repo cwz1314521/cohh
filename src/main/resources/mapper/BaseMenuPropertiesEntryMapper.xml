@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseMenuPropertiesEntryMapper">
+    <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="TINYINT"/>
+        <result column="pro_name" property="proName" jdbcType="VARCHAR"/>
+        <result column="pro_type" property="proType" jdbcType="BIGINT"/>
+        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="num" property="num" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="BIT"/>
+        <result column="is_front_show" property="isFrontShow" jdbcType="BIT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, gmt_create, gmt_modified, is_deleted, pro_name, pro_type, menu_id, price, num,
+    status, is_front_show
+    </sql>
+
+    <insert id="saveMenuProperties" parameterType="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+        insert into base_menu_properties
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="proName != null">
+                pro_name,
+            </if>
+            <if test="proType != null">
+                pro_type,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="isFrontShow != null">
+                is_front_show,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="proName != null">
+                #{proName,jdbcType=VARCHAR},
+            </if>
+            <if test="proType != null">
+                #{proType,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=BIGINT},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=DECIMAL},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="isFrontShow != null">
+                #{isFrontShow,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from base_menu_properties
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from base_menu_properties
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+    insert into base_menu_properties (id, gmt_create, gmt_modified,
+      is_deleted, pro_name, pro_type,
+      menu_id, price, num,
+      status, is_front_show)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},
+      #{isDeleted,jdbcType=TINYINT}, #{proName,jdbcType=VARCHAR}, #{proType,jdbcType=BIGINT},
+      #{menuId,jdbcType=BIGINT}, #{price,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL},
+      #{status,jdbcType=BIT}, #{isFrontShow,jdbcType=BIT})
+  </insert>
+    <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+        insert into base_menu_properties
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="proName != null">
+                pro_name,
+            </if>
+            <if test="proType != null">
+                pro_type,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="isFrontShow != null">
+                is_front_show,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="proName != null">
+                #{proName,jdbcType=VARCHAR},
+            </if>
+            <if test="proType != null">
+                #{proType,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=BIGINT},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=DECIMAL},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIT},
+            </if>
+            <if test="isFrontShow != null">
+                #{isFrontShow,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+        update base_menu_properties
+        <set>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="proName != null">
+                pro_name = #{proName,jdbcType=VARCHAR},
+            </if>
+            <if test="proType != null">
+                pro_type = #{proType,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=BIGINT},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="num != null">
+                num = #{num,jdbcType=DECIMAL},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="isFrontShow != null">
+                is_front_show = #{isFrontShow,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseMenuPropertiesEntry">
+    update base_menu_properties
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      pro_name = #{proName,jdbcType=VARCHAR},
+      pro_type = #{proType,jdbcType=BIGINT},
+      menu_id = #{menuId,jdbcType=BIGINT},
+      price = #{price,jdbcType=DECIMAL},
+      num = #{num,jdbcType=DECIMAL},
+      status = #{status,jdbcType=BIT},
+      is_front_show = #{isFrontShow,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectMenuProByMenuId" parameterType="java.lang.Long" resultType="com.hema.newretail.backstage.model.menu.MenuPropertiesBo">
+        select mp.id as id, mp.pro_type as proType,
+            CASE mp.pro_type
+            WHEN 0 THEN '水温'
+            ELSE pt.type_name
+            END as typeName,
+            mp.pro_name as proName, mp.price as price, mp.num as num, mp.`status` as status, mp.menu_id as menuId, mp.is_front_show as isFrontShow
+        from base_menu_properties as mp left join base_properties_type as pt on mp.pro_type=pt.id
+        where mp.menu_id = #{menuId}
+        order by mp.gmt_create, mp.pro_type
+    </select>
+</mapper>

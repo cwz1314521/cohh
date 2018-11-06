@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.IndexpageConfigEntryMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.IndexpageConfigEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="css_id" property="cssId" jdbcType="BIGINT" />
+    <result column="order" property="order" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap type="com.hema.newretail.backstage.model.index.IndexConfigBo" id="IndexMap">
+    <id jdbcType="BIGINT" property="cssId" column="id"/>
+    <result jdbcType="VARCHAR" property="cssAbstract" column="css_abstract"/>
+    <result jdbcType="SMALLINT" property="cssType" column="css_type"/>
+    <result jdbcType="INTEGER" property="order" column="order"/>
+    <result jdbcType="BIGINT" property="configId" column="configId"/>
+
+    <collection property="details" select="selectIndexConfigDetail" column="configId" javaType="java.util.ArrayList"
+                ofType="com.hema.newretail.backstage.entry.IndexpageDetailEntry"></collection>
+  </resultMap>
+  <resultMap id="DetailMap" type="com.hema.newretail.backstage.model.index.IndexpageDetailBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="config_id" property="configId" jdbcType="BIGINT" />
+    <result column="content_type" property="contentType" jdbcType="VARCHAR" />
+    <result column="grid_no" property="gridNo" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, css_id, order
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from base_indexpage_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_indexpage_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.IndexpageConfigEntry" useGeneratedKeys="true" keyProperty="id" >
+    insert into base_indexpage_config (id, css_id, `order`
+      )
+    values (#{id,jdbcType=BIGINT}, #{cssId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.IndexpageConfigEntry" >
+    insert into base_indexpage_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cssId != null" >
+        css_id,
+      </if>
+      <if test="order != null" >
+        order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="cssId != null" >
+        #{cssId,jdbcType=BIGINT},
+      </if>
+      <if test="order != null" >
+        #{order,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.IndexpageConfigEntry" >
+    update base_indexpage_config
+    <set >
+      <if test="cssId != null" >
+        css_id = #{cssId,jdbcType=BIGINT},
+      </if>
+      <if test="order != null" >
+        order = #{order,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.IndexpageConfigEntry" >
+    update base_indexpage_config
+    set css_id = #{cssId,jdbcType=BIGINT},
+      order = #{order,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectIndexConfig" resultMap="IndexMap">
+        select c.`order`, css.id,css.css_abstract,css.css_type, c.id as configId from base_indexpage_css as css, base_indexpage_config as c
+        where c.css_id=css.id
+        order by c.`order` asc
+    </select>
+    <select id="selectIndexConfigDetail" parameterType="java.lang.Long" resultMap="DetailMap">
+        select id, config_id, content_type, grid_no from base_indexpage_detail as detail where detail.config_id=#{configId} order by detail.grid_no
+    </select>
+    <delete id="deleteAll">
+      delete from base_indexpage_config
+    </delete>
+    <insert id="insertBatch" parameterType="java.util.ArrayList" useGeneratedKeys="true" keyProperty="id">
+        insert into base_indexpage_config (id, css_id, `order`)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.cssId,jdbcType=BIGINT}, #{item.order,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+</mapper>

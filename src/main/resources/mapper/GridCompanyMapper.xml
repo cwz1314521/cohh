@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.GridCompanyMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.grid.GridCompanyEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="company_code" property="companyCode" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="BIT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="contact_way" property="contactWay" jdbcType="VARCHAR" />
+    <result column="contact" property="contact" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="integral" property="integral" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="BaseResultEditMap" type="com.hema.newretail.backstage.model.grid.GridEditBo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="bCompanyName" property="bCompanyName" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="contact_way" property="contactWay" jdbcType="VARCHAR" />
+    <result column="contact" property="contact" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="bank" property="bank" jdbcType="VARCHAR" />
+    <result column="account_number" property="accountNumber" jdbcType="VARCHAR" />
+    <result column="account_name" property="accountName" jdbcType="VARCHAR" />
+    <result column="reward_amount" property="rewardAmount" jdbcType="DECIMAL" />
+    <result column="replenishment_time" property="replenishmentTime" jdbcType="INTEGER" />
+    <result column="cleanup_reward" property="cleanupReward" jdbcType="INTEGER" />
+    <result column="replace_reward" property="replaceReward" jdbcType="INTEGER" />
+    <result column="maintenance_reward" property="maintenanceReward" jdbcType="INTEGER" />
+    <result column="inspection_reward" property="inspectionReward" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="com.hema.newretail.backstage.model.grid.GridListBo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="amount" property="amount" jdbcType="DECIMAL" />
+        <result column="integral" property="integral" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, gmt_create, gmt_modified, company_name, company_code, is_deleted, user_name, 
+    password, company_id, contact_way, contact, province, city, area, addr, status, remark,integral
+  </sql>
+  <update id="deleteUpdateById" parameterType="java.lang.Long">
+    UPDATE grid_company SET is_deleted = 1 WHERE id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updatePassword" parameterType="java.lang.Long">
+    UPDATE grid_company SET password = 666666 WHERE id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectDetail"  resultMap="BaseResultEditMap" parameterType="java.lang.Long">
+    SELECT DISTINCT
+	c.id,
+	c.company_id,
+	b.company_name bCompanyName,
+	c.company_name,
+	c.user_name,
+	c.contact,
+	c.contact_way,
+	c.province,
+	c.city,
+	c.area,
+	c.addr,
+	c.`status`,
+	c.remark,
+	a.account_number,
+	a.account_name,
+	a.bank,
+	r.reward_amount,
+r.replenishment_time,
+r.cleanup_reward,
+r.replace_reward,
+r.maintenance_reward,
+r.inspection_reward
+FROM
+	grid_company c
+LEFT JOIN busi_company_account a ON c.id = a.ref_id
+LEFT JOIN base_company b ON c.company_id = b.id
+LEFT JOIN grid_integral_rule r ON c.id = r.grid_company_id
+WHERE
+	c.id = #{id,jdbcType=BIGINT}
+ORDER by r.gmt_create DESC LIMIT 1
+  </select>
+  <select id="selectGridList" resultMap="ListResultMap" parameterType="com.hema.newretail.backstage.common.queryparam.grid.GridListCondition">
+        select g.company_name,g.id,g.gmt_create,g.`status`,g.integral,a.amount
+        from grid_company g
+        LEFT JOIN busi_company_account a on g.id = a.ref_id and a.type = '0'
+        where
+        g.is_deleted = 0
+        <if test="province != null and province != ''">
+            and g.province = #{province}
+            <if test="city != null and city != ''">
+                and g.city = #{city}
+                <if test="area != null and area != ''">
+                    and g.area in
+                    <foreach item="item" index="index" collection="area" open="("  close=")" separator=",">
+                        #{item}
+                    </foreach>
+                </if>
+            </if>
+        </if>
+        <if test="id != null and id != ''">
+            and g.id = #{id}
+        </if>
+        <if test="status != null and status != ''">
+            and g.status=#{status}
+        </if>
+        <if test="name != null and name != ''">
+            and g.company_name like #{name,jdbcType=VARCHAR}"%"
+        </if>
+        order by g.id desc
+  </select>
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from grid_company
+    where is_deleted = 0
+    and  status = 0
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from grid_company
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from grid_company
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyEntry" >
+    insert into grid_company (id, gmt_create, gmt_modified, 
+      company_name, company_code, is_deleted, 
+      user_name, password, company_id, 
+      contact_way, contact, province, 
+      city, area, addr, status, 
+      remark,integral)
+    values (#{id,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
+      #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, 
+      #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{companyId,jdbcType=BIGINT}, 
+      #{contactWay,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{integral,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyEntry" >
+    insert into grid_company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="companyCode != null" >
+        company_code,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="contactWay != null" >
+        contact_way,
+      </if>
+      <if test="contact != null" >
+        contact,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="addr != null" >
+        addr,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="integral != null" >
+        integral,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="contactWay != null" >
+        #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyEntry" >
+    update grid_company
+    <set >
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="contactWay != null" >
+        contact_way = #{contactWay,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        integral = #{integral,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.grid.GridCompanyEntry" >
+    update grid_company
+    set gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=BIGINT},
+      contact_way = #{contactWay,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      integral = #{integral,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="seelctAllSubCompany" resultType="com.hema.newretail.backstage.model.grid.SubCompanyBo">
+    select id, company_name as companyName from base_company
+      <where>
+          `status` = 0
+          <if test="null != nameOrCode and nameOrCode !='' ">
+              and (company_name like CONCAT(#{nameOrCode}, '%') or id=#{nameOrCode})
+          </if>
+      </where>
+  </select>
+  <select id="selectGridCompanyList" resultType="com.hema.newretail.backstage.model.grid.GridCompanyListBo">
+    select g.id, g.company_name as companyName, CONCAT(IFNULL(g.province,''),IFNULL(g.city,''),IFNULL(g.area,'')) as address from grid_company as g
+    <where>
+      g.is_deleted=0 and g.`status`=0
+      <if test="null != condition.province and condition.province !=''">
+        and g.province=#{condition.province}
+      </if>
+      <if test="null != condition.city and condition.city !=''">
+        and g.city=#{condition.city}
+      </if>
+      <if test="null != condition.area and condition.area !=''">
+        and g.area=#{condition.area}
+      </if>
+      <if test="null != condition.nameOrCode and condition.nameOrCode !=''">
+        and g.company_name like CONCAT('%', #{condition.nameOrCode}, '%')
+      </if>
+    </where>
+  </select>
+  <select id="selectHashcodeByCompanyId" resultType="java.lang.String">
+    select g.geo_hash_code as geoHashCode from grid_company_geohash as g where g.grid_company_id=#{companyId}
+  </select>
+</mapper>

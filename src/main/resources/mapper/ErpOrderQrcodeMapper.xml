@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.ErpOrderQrcodeMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.erp.ErpOrderQrcodeEntry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_ingredient_id" property="orderIngredientId" jdbcType="BIGINT" />
+    <result column="qrcode_code" property="qrcodeCode" jdbcType="VARCHAR" />
+    <result column="qrcode_url" property="qrcodeUrl" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="quality_guarantee_period" property="qualityGuaranteePeriod" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="grid_company_id" property="gridCompanyId" jdbcType="BIGINT" />
+    <result column="machine_id" property="machineId" jdbcType="BIGINT" />
+    <result column="company_instore_user_id" property="companyInstoreUserId" jdbcType="BIGINT" />
+    <result column="company_instore_time" property="companyInstoreTime" jdbcType="TIMESTAMP" />
+    <result column="company_outstore_user_id" property="companyOutstoreUserId" jdbcType="BIGINT" />
+    <result column="company_outstore_time" property="companyOutstoreTime" jdbcType="TIMESTAMP" />
+    <result column="grid_user_id" property="gridUserId" jdbcType="BIGINT" />
+    <result column="grid_instore_user_id" property="gridInstoreUserId" jdbcType="BIGINT" />
+    <result column="grid_instore_time" property="gridInstoreTime" jdbcType="TIMESTAMP" />
+    <result column="grid_outstore_user_id" property="gridOutstoreUserId" jdbcType="BIGINT" />
+    <result column="grid_outstore_time" property="gridOutstoreTime" jdbcType="TIMESTAMP" />
+    <result column="grid_task_user_id" property="gridTaskUserId" jdbcType="BIGINT" />
+    <result column="up_time" property="upTime" jdbcType="TIMESTAMP" />
+    <result column="down_time" property="downTime" jdbcType="TIMESTAMP" />
+    <result column="discarded_time" property="discardedTime" jdbcType="TIMESTAMP" />
+    <result column="discarded_user_id" property="discardedUserId" jdbcType="BIGINT" />
+    <result column="out_factory_time" property="outFactoryTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="BaseInStoreListMap" type="com.hema.newretail.backstage.model.erp.InStoreListBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="quality_guarantee_period" property="qualityGuaranteePeriod" jdbcType="TIMESTAMP" />
+  <result column="status" property="status" jdbcType="INTEGER" />
+  <result column="ingredientName" property="ingredientName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="InStoreTodayMap" type="com.hema.newretail.backstage.model.erp.InStoreTodayBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="orderCode" property="orderCode" jdbcType="VARCHAR" />
+  <collection property="ingredients" select="selectInStoreTodaySonMap" column="id" javaType="java.util.ArrayList"
+                ofType="InStoreTodaySonMap"></collection>
+  </resultMap>
+  <resultMap id="InStoreTodaySonMap" type="com.hema.newretail.backstage.model.erp.InStoreTodaySonBo" >
+  <result column="num" property="num" jdbcType="INTEGER" />
+  <result column="ingredientName" property="ingredientName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="RecordMap" type="com.hema.newretail.backstage.model.erp.InstoreRecordBo" >
+  <id column="id" property="id" jdbcType="BIGINT" />
+  <result column="ingredientName" property="ingredientName" jdbcType="VARCHAR" />
+  <result column="qrcodeCode" property="qrcodeCode" jdbcType="VARCHAR" />
+  <result column="qualityGuaranteePeriod" property="qualityGuaranteePeriod" jdbcType="VARCHAR" />
+  <result column="status" property="status" jdbcType="VARCHAR" />
+  <result column="orderCode" property="orderCode" jdbcType="VARCHAR" />
+  <result column="isPeriod" property="isPeriod" jdbcType="VARCHAR" />
+  <result column="companyInstoreUserName" property="companyInstoreUserName" jdbcType="VARCHAR" />
+  <result column="companyInstoreTime" property="companyInstoreTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, order_ingredient_id, qrcode_code, qrcode_url, gmt_create, quality_guarantee_period, 
+    status, company_id, grid_company_id, machine_id, company_instore_user_id, company_instore_time, 
+    company_outstore_user_id, company_outstore_time, grid_user_id, grid_instore_user_id, 
+    grid_instore_time, grid_outstore_user_id, grid_outstore_time, grid_task_user_id, 
+    up_time, down_time, discarded_time, discarded_user_id, out_factory_time
+  </sql>
+
+  <select id="selectRecordMap" resultMap="RecordMap" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreRecordListDBCondition">
+    SELECT
+	q.id id,
+	q.qrcode_code qrcodeCode,
+	o.order_code orderCode,
+	CONCAT(
+		f.ingredient_name,
+		f.ingredient_code
+	) AS ingredientName,
+	date_format(
+		q.quality_guarantee_period,
+		'%Y-%m-%d'
+	) qualityGuaranteePeriod,
+
+IF (
+	q.quality_guarantee_period > now(),
+	'未过期',
+	'已过期'
+) AS isPeriod,
+ CASE q.`status`
+WHEN 1 THEN
+	'入库（分公司）'
+WHEN 2 THEN
+	'出库（分公司）'
+WHEN 3 THEN
+	'入库（网格公司）'
+WHEN 4 THEN
+	'出库（网格公司）'
+WHEN 5 THEN
+	'上架'
+WHEN 6 THEN
+	'下架'
+WHEN 7 THEN
+	'废弃'
+ELSE
+	'其他状态'
+END AS status,
+f.ingredient_name companyInstoreUserName,
+date_format(
+		q.company_instore_time,
+		'%Y-%m-%d'
+	) companyInstoreTime
+FROM
+	erp_order_qrcode q
+LEFT JOIN erp_order_ingredient i ON q.order_ingredient_id = i.id
+LEFT JOIN erp_ingredient_order_address a ON a.id = i.ingredient_order_address_id
+LEFT JOIN erp_ingredient_order o ON o.id = a.ingredient_order_id
+LEFT JOIN base_ingredient_info f ON f.id = i.ingredient_id
+LEFT JOIN base_user_info u ON q.company_instore_user_id = f.id
+WHERE q.`status` not in (-1,0)
+    <if test="qrcodeCode != null" >
+      and q.qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    </if>
+    <if test="ingredientId != null" >
+      and i.ingredient_id = #{ingredientId,jdbcType=BIGINT}
+    </if>
+    <if test="orderCode != null" >
+      and o.order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="qualityGuaranteePeriod != null" >
+      <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')<
+       DATE_FORMAT( #{qualityGuaranteePeriod,jdbcType=TIMESTAMP}, '%Y-%m-%d')   ]]>
+    </if>
+    <if test="isPeriod != null" >
+      <if test="isPeriod == 1" >
+        <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')<
+       DATE_FORMAT( NOW(), '%Y-%m-%d')   ]]>
+      </if>
+      <if test="isPeriod == 0" >
+        <![CDATA[   and DATE_FORMAT(q.quality_guarantee_period , '%Y-%m-%d')>
+         DATE_FORMAT( #{qualityGuaranteePeriod,jdbcType=TIMESTAMP}, '%Y-%m-%d')   ]]>
+      </if>
+    </if>
+    <if test="status != null" >
+      and q.status = #{status,jdbcType=BIGINT}
+    </if>
+    <if test="companyInstoreId != null" >
+    and q.company_instore_user_id = #{companyInstoreId,jdbcType=BIGINT}
+    </if>
+    <if test="startDate != null" >
+      and q.quality_guarantee_period between #{startDate,jdbcType=TIMESTAMP} and #{endDate,jdbcType=TIMESTAMP}
+   </if>
+  </select>
+  <select id="selectInStoreTodayMap" resultMap="InStoreTodayMap">
+    SELECT
+	o.order_code orderCode,
+	q.order_ingredient_id id
+FROM
+	erp_order_qrcode q INNER JOIN erp_ingredient_order o on q.order_ingredient_id =o.id
+WHERE
+	DAY (company_instore_time) = DAY (NOW())
+and
+	q.`status` = -1
+  </select>
+  <select id="selectInStoreTodaySonMap" resultMap="InStoreTodaySonMap" parameterType="java.lang.Long" >
+   SELECT
+
+	i.ingredient_name ingredientName,
+	SUM(num) num
+FROM
+	erp_ingredient_order a
+INNER JOIN erp_ingredient_order_address b ON a.id = b.ingredient_order_id
+INNER JOIN erp_order_ingredient c ON b.id = c.ingredient_order_address_id
+INNER JOIN base_ingredient_info i on c.ingredient_id = i.id
+where a.id = #{id,jdbcType=BIGINT}
+GROUP BY
+	c.ingredient_id
+  </select>
+  <select id="selectBaseInStoreListMap" resultMap="BaseInStoreListMap" >
+SELECT
+DISTINCT
+	e.id,
+	e.quality_guarantee_period,
+	e.`status`,
+	f.ingredient_name ingredientName
+FROM
+	erp_order_qrcode e,
+	erp_order_ingredient i,
+	base_ingredient_info f
+WHERE
+	e.order_ingredient_id = i.id
+AND
+	i.ingredient_id = f.id
+AND
+	e.`status` = -1
+  </select>
+  <update id="updateByQrcodeCode" parameterType="java.lang.String" >
+    update erp_order_qrcode
+    set status = -1
+    where qrcode_code = #{qrcodeCode,jdbcType=VARCHAR}
+    and status = 0
+  </update>
+  <update id="updateByInStoreDBCondition" parameterType="com.hema.newretail.backstage.common.queryparam.erp.InStoreDBCondition" >
+    update erp_order_qrcode
+    set status = 1,
+    set company_id = #{companyId,jdbcType=BIGINT},
+    set company_instore_user_id = #{userId,jdbcType=BIGINT},
+    set company_instore_time = #{companyInstoreTime,jdbcType=TIMESTAMP}
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="code != null" >
+      and qrcode_code = #{code,jdbcType=VARCHAR}
+    </if>
+  </update>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from erp_order_qrcode
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from erp_order_qrcode
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderQrcodeEntry" >
+    insert into erp_order_qrcode (id, order_ingredient_id, qrcode_code, 
+      qrcode_url, gmt_create, quality_guarantee_period, 
+      status, company_id, grid_company_id, 
+      machine_id, company_instore_user_id, company_instore_time, 
+      company_outstore_user_id, company_outstore_time, 
+      grid_user_id, grid_instore_user_id, grid_instore_time, 
+      grid_outstore_user_id, grid_outstore_time, 
+      grid_task_user_id, up_time, down_time, 
+      discarded_time, discarded_user_id, out_factory_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{orderIngredientId,jdbcType=BIGINT}, #{qrcodeCode,jdbcType=VARCHAR}, 
+      #{qrcodeUrl,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{qualityGuaranteePeriod,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{companyId,jdbcType=BIGINT}, #{gridCompanyId,jdbcType=BIGINT}, 
+      #{machineId,jdbcType=BIGINT}, #{companyInstoreUserId,jdbcType=BIGINT}, #{companyInstoreTime,jdbcType=TIMESTAMP}, 
+      #{companyOutstoreUserId,jdbcType=BIGINT}, #{companyOutstoreTime,jdbcType=TIMESTAMP}, 
+      #{gridUserId,jdbcType=BIGINT}, #{gridInstoreUserId,jdbcType=BIGINT}, #{gridInstoreTime,jdbcType=TIMESTAMP}, 
+      #{gridOutstoreUserId,jdbcType=BIGINT}, #{gridOutstoreTime,jdbcType=TIMESTAMP}, 
+      #{gridTaskUserId,jdbcType=BIGINT}, #{upTime,jdbcType=TIMESTAMP}, #{downTime,jdbcType=TIMESTAMP}, 
+      #{discardedTime,jdbcType=TIMESTAMP}, #{discardedUserId,jdbcType=BIGINT}, #{outFactoryTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderQrcodeEntry" >
+    insert into erp_order_qrcode
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderIngredientId != null" >
+        order_ingredient_id,
+      </if>
+      <if test="qrcodeCode != null" >
+        qrcode_code,
+      </if>
+      <if test="qrcodeUrl != null" >
+        qrcode_url,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="qualityGuaranteePeriod != null" >
+        quality_guarantee_period,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id,
+      </if>
+      <if test="machineId != null" >
+        machine_id,
+      </if>
+      <if test="companyInstoreUserId != null" >
+        company_instore_user_id,
+      </if>
+      <if test="companyInstoreTime != null" >
+        company_instore_time,
+      </if>
+      <if test="companyOutstoreUserId != null" >
+        company_outstore_user_id,
+      </if>
+      <if test="companyOutstoreTime != null" >
+        company_outstore_time,
+      </if>
+      <if test="gridUserId != null" >
+        grid_user_id,
+      </if>
+      <if test="gridInstoreUserId != null" >
+        grid_instore_user_id,
+      </if>
+      <if test="gridInstoreTime != null" >
+        grid_instore_time,
+      </if>
+      <if test="gridOutstoreUserId != null" >
+        grid_outstore_user_id,
+      </if>
+      <if test="gridOutstoreTime != null" >
+        grid_outstore_time,
+      </if>
+      <if test="gridTaskUserId != null" >
+        grid_task_user_id,
+      </if>
+      <if test="upTime != null" >
+        up_time,
+      </if>
+      <if test="downTime != null" >
+        down_time,
+      </if>
+      <if test="discardedTime != null" >
+        discarded_time,
+      </if>
+      <if test="discardedUserId != null" >
+        discarded_user_id,
+      </if>
+      <if test="outFactoryTime != null" >
+        out_factory_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderIngredientId != null" >
+        #{orderIngredientId,jdbcType=BIGINT},
+      </if>
+      <if test="qrcodeCode != null" >
+        #{qrcodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodeUrl != null" >
+        #{qrcodeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qualityGuaranteePeriod != null" >
+        #{qualityGuaranteePeriod,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyId != null" >
+        #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="machineId != null" >
+        #{machineId,jdbcType=BIGINT},
+      </if>
+      <if test="companyInstoreUserId != null" >
+        #{companyInstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="companyInstoreTime != null" >
+        #{companyInstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyOutstoreUserId != null" >
+        #{companyOutstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="companyOutstoreTime != null" >
+        #{companyOutstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridUserId != null" >
+        #{gridUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridInstoreUserId != null" >
+        #{gridInstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridInstoreTime != null" >
+        #{gridInstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridOutstoreUserId != null" >
+        #{gridOutstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridOutstoreTime != null" >
+        #{gridOutstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridTaskUserId != null" >
+        #{gridTaskUserId,jdbcType=BIGINT},
+      </if>
+      <if test="upTime != null" >
+        #{upTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downTime != null" >
+        #{downTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="discardedTime != null" >
+        #{discardedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="discardedUserId != null" >
+        #{discardedUserId,jdbcType=BIGINT},
+      </if>
+      <if test="outFactoryTime != null" >
+        #{outFactoryTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderQrcodeEntry" >
+    update erp_order_qrcode
+    <set >
+      <if test="orderIngredientId != null" >
+        order_ingredient_id = #{orderIngredientId,jdbcType=BIGINT},
+      </if>
+      <if test="qrcodeCode != null" >
+        qrcode_code = #{qrcodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="qrcodeUrl != null" >
+        qrcode_url = #{qrcodeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="qualityGuaranteePeriod != null" >
+        quality_guarantee_period = #{qualityGuaranteePeriod,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="gridCompanyId != null" >
+        grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="machineId != null" >
+        machine_id = #{machineId,jdbcType=BIGINT},
+      </if>
+      <if test="companyInstoreUserId != null" >
+        company_instore_user_id = #{companyInstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="companyInstoreTime != null" >
+        company_instore_time = #{companyInstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyOutstoreUserId != null" >
+        company_outstore_user_id = #{companyOutstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="companyOutstoreTime != null" >
+        company_outstore_time = #{companyOutstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridUserId != null" >
+        grid_user_id = #{gridUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridInstoreUserId != null" >
+        grid_instore_user_id = #{gridInstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridInstoreTime != null" >
+        grid_instore_time = #{gridInstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridOutstoreUserId != null" >
+        grid_outstore_user_id = #{gridOutstoreUserId,jdbcType=BIGINT},
+      </if>
+      <if test="gridOutstoreTime != null" >
+        grid_outstore_time = #{gridOutstoreTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gridTaskUserId != null" >
+        grid_task_user_id = #{gridTaskUserId,jdbcType=BIGINT},
+      </if>
+      <if test="upTime != null" >
+        up_time = #{upTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downTime != null" >
+        down_time = #{downTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="discardedTime != null" >
+        discarded_time = #{discardedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="discardedUserId != null" >
+        discarded_user_id = #{discardedUserId,jdbcType=BIGINT},
+      </if>
+      <if test="outFactoryTime != null" >
+        out_factory_time = #{outFactoryTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.erp.ErpOrderQrcodeEntry" >
+    update erp_order_qrcode
+    set order_ingredient_id = #{orderIngredientId,jdbcType=BIGINT},
+      qrcode_code = #{qrcodeCode,jdbcType=VARCHAR},
+      qrcode_url = #{qrcodeUrl,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      quality_guarantee_period = #{qualityGuaranteePeriod,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      company_id = #{companyId,jdbcType=BIGINT},
+      grid_company_id = #{gridCompanyId,jdbcType=BIGINT},
+      machine_id = #{machineId,jdbcType=BIGINT},
+      company_instore_user_id = #{companyInstoreUserId,jdbcType=BIGINT},
+      company_instore_time = #{companyInstoreTime,jdbcType=TIMESTAMP},
+      company_outstore_user_id = #{companyOutstoreUserId,jdbcType=BIGINT},
+      company_outstore_time = #{companyOutstoreTime,jdbcType=TIMESTAMP},
+      grid_user_id = #{gridUserId,jdbcType=BIGINT},
+      grid_instore_user_id = #{gridInstoreUserId,jdbcType=BIGINT},
+      grid_instore_time = #{gridInstoreTime,jdbcType=TIMESTAMP},
+      grid_outstore_user_id = #{gridOutstoreUserId,jdbcType=BIGINT},
+      grid_outstore_time = #{gridOutstoreTime,jdbcType=TIMESTAMP},
+      grid_task_user_id = #{gridTaskUserId,jdbcType=BIGINT},
+      up_time = #{upTime,jdbcType=TIMESTAMP},
+      down_time = #{downTime,jdbcType=TIMESTAMP},
+      discarded_time = #{discardedTime,jdbcType=TIMESTAMP},
+      discarded_user_id = #{discardedUserId,jdbcType=BIGINT},
+      out_factory_time = #{outFactoryTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

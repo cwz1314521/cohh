@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hema.newretail.backstage.dao.BaseCompanyGeoHashMapper" >
+  <resultMap id="BaseResultMap" type="com.hema.newretail.backstage.entry.BaseCompanyGeoHashData" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="company_id" property="companyId" jdbcType="BIGINT" />
+    <result column="geo_hash_code" property="geoHashCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="GeoHashResult" type="java.lang.String" >
+    <result column="geo_hash_code" property="geoHashCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company_id, geo_hash_code
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_company_geohash
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from base_company_geohash
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hema.newretail.backstage.entry.BaseCompanyGeoHashData" >
+    insert into base_company_geohash (id, company_id, geo_hash_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{companyId,jdbcType=BIGINT}, #{geoHashCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hema.newretail.backstage.entry.BaseCompanyGeoHashData" >
+    insert into base_company_geohash
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="geoHashCode != null" >
+        geo_hash_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHashCode != null" >
+        #{geoHashCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hema.newretail.backstage.entry.BaseCompanyGeoHashData" >
+    update base_company_geohash
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="geoHashCode != null" >
+        geo_hash_code = #{geoHashCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hema.newretail.backstage.entry.BaseCompanyGeoHashData" >
+    update base_company_geohash
+    set company_id = #{companyId,jdbcType=BIGINT},
+      geo_hash_code = #{geoHashCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="countByBaseCompanyId" parameterType="java.lang.Long" resultType="int">
+    select count(0) from base_company_geohash where company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+  <select id="findServiceAreaByBaseCompanyId" resultMap="BaseResultMap" parameterType="Long">
+    select
+    <include refid="Base_Column_List" />
+    from base_company_geohash
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+  <select id="freeGeoHash" resultMap="GeoHashResult">
+    select geo_hash_code
+    from base_company_geohash
+    where 1=1
+    <if test="mapGeoHash != null">
+      and geo_hash_code in
+      <foreach collection="mapGeoHash" index="index" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="findBaseCompanyGeoHashByCompanyId" resultMap="GeoHashResult" parameterType="java.lang.Long">
+    select geo_hash_code
+    from base_company_geohash
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </select>
+  <insert id="insertBatchBaseCompanyGeoHash" parameterType="java.util.List">
+    insert into base_company_geohash (company_id, geo_hash_code)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (
+      #{item.companyId,jdbcType=BIGINT},
+      #{item.geoHashCode,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <delete id="deleteByCompanyId" parameterType="java.lang.Long">
+    delete from base_company_geohash
+    where company_id = #{companyId,jdbcType=BIGINT}
+  </delete>
+  <select id="findGeoHashs" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from base_company_geohash
+    where 1=1
+    <if test="mapGeoHash != null">
+      and geo_hash_code in
+      <foreach collection="mapGeoHash" index="index" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+</mapper>
